@@ -17,5 +17,5 @@ All newly added scripts are disabled by default. Visit the Settings Window to en
 Notes: 
 - Original source of this repository is: https://github.com/Debitosphere/CNC.TA.Crucial.Scripts
 - zbluebugz's copy is cloned from Debitosphere, but has some fixes applied to make this script work with 19.4
-- updated to script libaries: infernal wrapper ; The Movement ;
+- script components updated: infernal wrapper ; The Movement ;
 - fixes sourced from netquik
