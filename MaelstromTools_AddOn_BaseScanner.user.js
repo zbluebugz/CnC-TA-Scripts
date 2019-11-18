@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Maelstrom ADDON BaseScanner
 // @description Maelstrom ADDON BaseScanner
-// @downloadURL https://raw.githubusercontent.com/zbluebugz/CnC_TA/master/MaelstromTools_AddOn_BaseScanner.user.js
-// @updateURL   https://raw.githubusercontent.com/zbluebugz/CnC_TA/master/MaelstromTools_AddOn_BaseScanner.user.js
+// @downloadURL https://github.com/zbluebugz/CnC-TA-Crucial-Pack-All-in-One-by-DebitoSphere/raw/master/MaelstromTools_AddOn_BaseScanner.user.js
+// @updateURL   https://github.com/zbluebugz/CnC-TA-Crucial-Pack-All-in-One-by-DebitoSphere/raw/master/MaelstromTools_AddOn_BaseScanner.user.js
 // @include     http*://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @include     http*://cncapp*.alliances.commandandconquer.com/*/index.aspx*
 // @version     1.9.1
