@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name        Maelstrom ADDON BaseScanner
-// @description Maelstrom ADDON BaseScanner
-// @downloadURL https://github.com/zbluebugz/CnC-TA-Crucial-Pack-All-in-One-by-DebitoSphere/raw/master/MaelstromTools_AddOn_BaseScanner.user.js
-// @updateURL   https://github.com/zbluebugz/CnC-TA-Crucial-Pack-All-in-One-by-DebitoSphere/raw/master/MaelstromTools_AddOn_BaseScanner.user.js
+// @name        Maelstrom AddOn BaseScanner
+// @description Maelstrom AddOn BaseScanner
+// @downloadURL https://github.com/zbluebugz/CnC-TA-Scripts/raw/master/MaelstromTools_AddOn_BaseScanner.user.js
+// @updateURL   https://github.com/zbluebugz/CnC-TA-Scripts/raw/master/MaelstromTools_AddOn_BaseScanner.user.js
 // @include     http*://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @include     http*://cncapp*.alliances.commandandconquer.com/*/index.aspx*
 // @version     1.9.1
@@ -14,7 +14,8 @@
 //
 // * Includes infected camps.
 // * Include all layouts view option.
-// Modified by zbluebugz on November 2019.
+// Modified by zbluebugz in November 2019.
+//
 // ==/UserScript==
 (function () {
 	var MaelstromTools_Basescanner = function () {
