@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name        CnC TA: Crucial Pack All in One by DebitoSphere
 // @description Contains every crucial script that is fully functional and updated constantly.
-// @version     1.0.61
+// @version     1.0.62
 // @author      DebitoSphere
 // @homepage    https://www.allyourbasesbelong2us.com
 // @namespace   AllYourBasesbelong2UsCrucialPackAllinOne
 // @include     http*://*alliances*.com/*
 // @include     https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
-// @include     http*://*.cncopt.com/*
-// @include     http*://cncopt.com/*
+// @downloadURL https://github.com/zbluebugz/CnC-TA-Scripts/raw/master/CNC.TA.Crucial.Pack.All.in.One.by.Debitosphere.user.js
+// @updateURL   https://github.com/zbluebugz/CnC-TA-Scripts/raw/master/CNC.TA.Crucial.Pack.All.in.One.by.Debitosphere.user.js
 // @grant       GM_log
 // @grant       GM_setValue
 // @grant       GM_getValue
@@ -19,11 +19,13 @@
 // @grant       unsafeWindow
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js
 // This Pack includes all crucial scripts needed to play the game. They are in the correct order to ensure the least amount of script errors.
-// Modified by zbluebugz on November 2019. Fixes applied due to EA's November 2019 game patch/updates release 19.4
-// - updated to script libaries: infernal wrapper ; The Movement ;
+//
+// Modified by zbluebugz in November 2019. Fixes applied due to EA's November 2019 game patch/updates release 19.4
+// - updated components: infernal wrapper; the movement;
 // - fixes sourced from netquik
+// - updated BaseScanner - includes infected camps and all layouts view.
 // ==/UserScript==
-var CrucialScriptVersion = "1.0.61";
+var CrucialScriptVersion = "1.0.62";
 
 var GM_SuperValue = new function () {
 
@@ -339,8 +341,8 @@ var ScriptAuthors;
 	var ScriptDescription02 = "Just a set of statistics and summaries about repair time and base resources. Mainly for internal use, but you are free to test and comment it. <br> Modified to include Resource Points in MCV Timer";
 	var ScriptAuthors02 = "Maelstrom<br>HuffyLuf<br>KRS_L<br>Krisan<br>Debitosphere";
 	var Script03;
-	var ScriptName03 = "Maelstrom Tools ADDON - BaseScanner with All Layouts Mod";
-	var ScriptDescription03 = "Base Scanner integrates into Maelstrom Tools to help search for layouts. Now includes *All Layouts* view option";
+	var ScriptName03 = "Maelstrom Tools AddOn - BaseScanner with All Layouts Mod";
+	var ScriptDescription03 = "Base Scanner integrates into Maelstrom Tools to help search for layouts. Now includes *All Layouts* view option. v1.9.1";
 	var ScriptAuthors03 = "BlinDManX<br>Sp1der";
 	var Script04;
 	var ScriptName04 = "Maelstrom Tools ADDON - City Online Status Colorer";
@@ -444,7 +446,7 @@ var ScriptAuthors;
 	var ScriptAuthors28 = "Debitosphere";
 	var Script29;
 	var ScriptName29 = "TA Auto Repair";
-	var ScriptDescription29 = "Automatically repairs buildings when they get damaged. You can change the order of priority as well. By swfault it will repair ever 10 minutes";
+	var ScriptDescription29 = "Automatically repairs buildings when they get damaged. You can change the order of priority as well. By deffault it will repair ever 10 minutes";
 	var ScriptAuthors29 = "petui";
 	var Script30;
 	var ScriptName30 = "TA Supplies Mod";
@@ -5342,1502 +5344,1584 @@ Start of Maelstrom Tools Base Scanner
 */
 if (Disable_MaelstromTools_BaseScanner == true){
 (function () {
-	var MaelstromTools_Basescanner = function () {
-		window.__msbs_version = "1.8.8";
-		function createMaelstromTools_Basescanner() {
-
-			qx.Class.define("Addons.BaseScannerGUI", {
-				type : "singleton",
-				extend : qx.ui.window.Window,
-				construct : function () {
-					try {
-						this.base(arguments);
-						console.info("Addons.BaseScannerGUI " + window.__msbs_version);
-						this.T = Addons.Language.getInstance();
-						this.setWidth(820);
-						this.setHeight(400);
-						this.setContentPadding(10);
-						this.setShowMinimize(true);
-						this.setShowMaximize(true);
-						this.setShowClose(true);
-						this.setResizable(true);
-						this.setAllowMaximize(true);
-						this.setAllowMinimize(true);
-						this.setAllowClose(true);
-						this.setShowStatusbar(false);
-						this.setDecorator(null);
-						this.setPadding(5);
-						this.setLayout(new qx.ui.layout.VBox(3));
-						this.stats.src = 'http://goo.gl/DrJ2x'; //1.5
-
-						this.FI();
-						this.FH();
-						this.FD();
-						if (this.ZE == null) {
-							this.ZE = [];
-						}
-						this.setPadding(0);
-						this.removeAll();
-
-						this.add(this.ZF);
-						this.add(this.ZN);
-
-						this.add(this.ZP);
-						this.ZL.setData(this.ZE);
-
-					} catch (e) {
-						console.debug("Addons.BaseScannerGUI.construct: ", e);
-					}
-				},
-				members : {
-					// pictures
-					stats : document.createElement('img'),
-					T : null,
-					ZA : 0,
-					ZB : null,
-					ZC : null,
-					ZD : null,
-					ZE : null,
-					ZF : null,
-					ZG : null,
-					ZH : false,
-					ZI : true,
-					ZJ : null,
-					ZK : null,
-					ZL : null,
-					ZM : null,
-					ZN : null,
-					ZO : null,
-					ZP : null,
-					ZQ : null,
-					ZR : [],
-					ZT : true,
-					ZU : null,
-					ZV : null,
-					ZX : null,
-					ZY : null,
-					ZZ : [],
-					ZS : {},
-					YZ : null,
-					YY : null,
-
-					openWindow : function (title) {
-						try {
-							this.setCaption(title);
-							if (this.isVisible()) {
-								this.close();
-							} else {
-								MT_Cache.updateCityCache();
-								MT_Cache = window.MaelstromTools.Cache.getInstance();
-								var cname;
-								this.ZC.removeAll();
-								for (cname in MT_Cache.Cities) {
-									var item = new qx.ui.form.ListItem(cname, null, MT_Cache.Cities[cname].Object);
-									this.ZC.add(item);
-									if (Addons.LocalStorage.getserver("Basescanner_LastCityID") == MT_Cache.Cities[cname].Object.get_Id()) {
-										this.ZC.setSelection([item]);
-									}
-								}
-								this.open();
-								this.moveTo(100, 100);
-							}
-						} catch (e) {
-							console.log("MaelstromTools.DefaultObject.openWindow: ", e);
-						}
-					},
-					FI : function () {
-						try {
-							this.ZL = new qx.ui.table.model.Simple();
-							this.ZL.setColumns(["ID", "LoadState", this.T.get("City"), this.T.get("Location"), this.T.get("Level"), this.T.get("Tiberium"), this.T.get("Crystal"), this.T.get("Dollar"), this.T.get("Research"), "Crystalfields", "Tiberiumfields", this.T.get("Building state"), this.T.get("Defense state"), this.T.get("CP"), "Def.HP/Off.HP", "Sum Tib+Cry+Cre", "(Tib+Cry+Cre)/CP", "CY", "DF", this.T.get("base set up at")]);
-							this.YY = ClientLib.Data.MainData.GetInstance().get_Player();
-							this.ZN = new qx.ui.table.Table(this.ZL);
-							this.ZN.setColumnVisibilityButtonVisible(false);
-							this.ZN.setColumnWidth(0, 0);
-							this.ZN.setColumnWidth(1, 0);
-							this.ZN.setColumnWidth(2, Addons.LocalStorage.getserver("Basescanner_ColWidth_2", 120));
-							this.ZN.setColumnWidth(3, Addons.LocalStorage.getserver("Basescanner_ColWidth_3", 60));
-							this.ZN.setColumnWidth(4, Addons.LocalStorage.getserver("Basescanner_ColWidth_4", 50));
-							this.ZN.setColumnWidth(5, Addons.LocalStorage.getserver("Basescanner_ColWidth_5", 60));
-							this.ZN.setColumnWidth(6, Addons.LocalStorage.getserver("Basescanner_ColWidth_6", 60));
-							this.ZN.setColumnWidth(7, Addons.LocalStorage.getserver("Basescanner_ColWidth_7", 60));
-							this.ZN.setColumnWidth(8, Addons.LocalStorage.getserver("Basescanner_ColWidth_8", 60));
-							this.ZN.setColumnWidth(9, Addons.LocalStorage.getserver("Basescanner_ColWidth_9", 30));
-							this.ZN.setColumnWidth(10, Addons.LocalStorage.getserver("Basescanner_ColWidth_10", 30));
-							this.ZN.setColumnWidth(11, Addons.LocalStorage.getserver("Basescanner_ColWidth_11", 50));
-							this.ZN.setColumnWidth(12, Addons.LocalStorage.getserver("Basescanner_ColWidth_12", 50));
-							this.ZN.setColumnWidth(13, Addons.LocalStorage.getserver("Basescanner_ColWidth_13", 30));
-							this.ZN.setColumnWidth(14, Addons.LocalStorage.getserver("Basescanner_ColWidth_14", 60));
-							this.ZN.setColumnWidth(15, Addons.LocalStorage.getserver("Basescanner_ColWidth_15", 60));
-							this.ZN.setColumnWidth(16, Addons.LocalStorage.getserver("Basescanner_ColWidth_16", 60));
-							this.ZN.setColumnWidth(17, Addons.LocalStorage.getserver("Basescanner_ColWidth_17", 50));
-							this.ZN.setColumnWidth(18, Addons.LocalStorage.getserver("Basescanner_ColWidth_18", 50));
-							this.ZN.setColumnWidth(19, Addons.LocalStorage.getserver("Basescanner_ColWidth_19", 40));
-							var c = 0;
-							var tcm = this.ZN.getTableColumnModel();
-							for (c = 0; c < this.ZL.getColumnCount(); c++) {
-								if (c == 0 || c == 1 || c == 11 || c == 12) {
-									tcm.setColumnVisible(c, Addons.LocalStorage.getserver("Basescanner_Column_" + c, false));
-								} else {
-									tcm.setColumnVisible(c, Addons.LocalStorage.getserver("Basescanner_Column_" + c, true));
-								}
-							}
-
-							tcm.setColumnVisible(1, false);
-							tcm.setHeaderCellRenderer(9, new qx.ui.table.headerrenderer.Icon(MT_Base.images[MaelstromTools.Statics.Crystal]), "Crystalfields");
-							tcm.setHeaderCellRenderer(10, new qx.ui.table.headerrenderer.Icon(MT_Base.images[MaelstromTools.Statics.Tiberium], "Tiberiumfields"));
-							tcm.setDataCellRenderer(5, new qx.ui.table.cellrenderer.Replace().set({
-									ReplaceFunction : this.FA
-								}));
-							tcm.setDataCellRenderer(6, new qx.ui.table.cellrenderer.Replace().set({
-									ReplaceFunction : this.FA
-								}));
-							tcm.setDataCellRenderer(7, new qx.ui.table.cellrenderer.Replace().set({
-									ReplaceFunction : this.FA
-								}));
-							tcm.setDataCellRenderer(8, new qx.ui.table.cellrenderer.Replace().set({
-									ReplaceFunction : this.FA
-								}));
-							tcm.setDataCellRenderer(15, new qx.ui.table.cellrenderer.Replace().set({
-									ReplaceFunction : this.FA
-								}));
-							tcm.setDataCellRenderer(16, new qx.ui.table.cellrenderer.Replace().set({
-									ReplaceFunction : this.FA
-								}));
-							tcm.setDataCellRenderer(19, new qx.ui.table.cellrenderer.Boolean());
-
-
-							if (PerforceChangelist >= 436669) { // 15.3 patch
-								var eventType = "cellDbltap";
-							} else { //old
-								var eventType = "cellDblclick";
-							}
-
-							this.ZN.addListener(eventType, function (e) {
-								Addons.BaseScannerGUI.getInstance().FB(e);
-							}, this);
-
-
-							tcm.addListener("widthChanged", function (e) {
-								//console.log(e, e.getData());
-								var col = e.getData().col;
-								var width = e.getData().newWidth;
-								Addons.LocalStorage.setserver("Basescanner_ColWidth_" + col, width);
-							}, tcm);
-
-						} catch (e) {
-							console.debug("Addons.BaseScannerGUI.FI: ", e);
-						}
-					},
-					FB : function (e) {
-						try {
-							console.log("e",e.getRow(),this.ZE);
-							var cityId = this.ZE[e.getRow()][0];
-							var posData = this.ZE[e.getRow()][3];
-							/* center screen */
-							if (posData != null && posData.split(':').length == 2) {
-								var posX = parseInt(posData.split(':')[0]);
-								var posY = parseInt(posData.split(':')[1]);
-								ClientLib.Vis.VisMain.GetInstance().CenterGridPosition(posX, posY);
-							}
-							/* and highlight base */
-							if (cityId && !(this.ZK[4].getValue())) {
-								//ClientLib.Data.MainData.GetInstance().get_Cities().set_CurrentCityId(cityId);
-								//webfrontend.gui.UtilView.openCityInMainWindow(cityId);
-								//webfrontend.gui.UtilView.openVisModeInMainWindow(1, cityId, false);
-								var bk = qx.core.Init.getApplication();
-								bk.getBackgroundArea().closeCityInfo();
-								bk.getPlayArea().setView(ClientLib.Data.PlayerAreaViewMode.pavmCombatSetupDefense, cityId, 0, 0);
-							}
-
-							var q = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
-							if (q != null)
-								q.get_CityArmyFormationsManager().set_CurrentTargetBaseId(cityId);
-
-						} catch (ex) {
-							console.debug("Addons.BaseScannerGUI FB error: ", ex);
-						}
-					},
-					FN : function (e) {
-						this.ZG.setLabel(this.T.get("Scan"));
-						this.ZH = false;
-					},
-					CBChanged : function (e) {
-						this.ZH = false;
-					},
-					FA : function (oValue) {
-						var f = new qx.util.format.NumberFormat();
-						f.setGroupingUsed(true);
-						f.setMaximumFractionDigits(3);
-						if (!isNaN(oValue)) {
-							if (Math.abs(oValue) < 100000)
-								oValue = f.format(Math.floor(oValue));
-							else if (Math.abs(oValue) >= 100000 && Math.abs(oValue) < 1000000)
-								oValue = f.format(Math.floor(oValue / 100) / 10) + "k";
-							else if (Math.abs(oValue) >= 1000000 && Math.abs(oValue) < 10000000)
-								oValue = f.format(Math.floor(oValue / 1000) / 1000) + "M";
-							else if (Math.abs(oValue) >= 10000000 && Math.abs(oValue) < 100000000)
-								oValue = f.format(Math.floor(oValue / 10000) / 100) + "M";
-							else if (Math.abs(oValue) >= 100000000 && Math.abs(oValue) < 1000000000)
-								oValue = f.format(Math.floor(oValue / 100000) / 10) + "M";
-							else if (Math.abs(oValue) >= 1000000000 && Math.abs(oValue) < 10000000000)
-								oValue = f.format(Math.floor(oValue / 1000000) / 1000) + "G";
-							else if (Math.abs(oValue) >= 10000000000 && Math.abs(oValue) < 100000000000)
-								oValue = f.format(Math.floor(oValue / 10000000) / 100) + "G";
-							else if (Math.abs(oValue) >= 100000000000 && Math.abs(oValue) < 1000000000000)
-								oValue = f.format(Math.floor(oValue / 100000000) / 10) + "G";
-							else if (Math.abs(oValue) >= 1000000000000 && Math.abs(oValue) < 10000000000000)
-								oValue = f.format(Math.floor(oValue / 1000000000) / 1000) + "T";
-							else if (Math.abs(oValue) >= 10000000000000 && Math.abs(oValue) < 100000000000000)
-								oValue = f.format(Math.floor(oValue / 10000000000) / 100) + "T";
-							else if (Math.abs(oValue) >= 100000000000000 && Math.abs(oValue) < 1000000000000000)
-								oValue = f.format(Math.floor(oValue / 100000000000) / 10) + "T";
-							else if (Math.abs(oValue) >= 1000000000000000)
-								oValue = f.format(Math.floor(oValue / 1000000000000)) + "T";
-						};
-						return oValue.toString();
-					},
-					// updateCache : function () {
-					// try {}
-					// catch (e) {
-					// console.debug("Addons.BaseScannerGUI.updateCache: ", e);
-					// }
-					// },
-					// setWidgetLabels : function () {
-					// try {
-					// if (!this.ZL) {
-					// this.FC();
-					// }
-					// this.ZL.setData(this.ZE);
-					// } catch (e) {
-					// console.debug("Addons.BaseScannerGUI.setWidgetLabels: ", e);
-					// }
-					// },
-					FH : function () {
-						try {
-							var oBox = new qx.ui.layout.Flow();
-							var oOptions = new qx.ui.container.Composite(oBox);
-							this.ZC = new qx.ui.form.SelectBox();
-							this.ZC.setHeight(25);
-							this.ZC.setMargin(5);
-							MT_Cache.updateCityCache();
-							MT_Cache = window.MaelstromTools.Cache.getInstance();
-							var cname;
-							for (cname in MT_Cache.Cities) {
-								var item = new qx.ui.form.ListItem(cname, null, MT_Cache.Cities[cname].Object);
-								this.ZC.add(item);
-								if (Addons.LocalStorage.getserver("Basescanner_LastCityID") == MT_Cache.Cities[cname].Object.get_Id()) {
-									this.ZC.setSelection([item]);
-								}
-							}
-							this.ZC.addListener("changeSelection", function (e) {
-								this.FP(0, 1, 200);
-								this.ZH = false;
-								this.ZG.setLabel(this.T.get("Scan"));
-							}, this);
-							oOptions.add(this.ZC);
-
-							var l = new qx.ui.basic.Label().set({
-									value : this.T.get("CP Limit"),
-									textColor : "white",
-									margin : 5
-								});
-							oOptions.add(l);
-
-							this.ZQ = new qx.ui.form.SelectBox();
-							this.ZQ.setWidth(50);
-							this.ZQ.setHeight(25);
-							this.ZQ.setMargin(5);
-							var limiter = Addons.LocalStorage.getserver("Basescanner_Cplimiter", 25);
-							for (var m = 11; m < 42; m += 1) {
-								item = new qx.ui.form.ListItem("" + m, null, m);
-								this.ZQ.add(item);
-								if (limiter == m) {
-									this.ZQ.setSelection([item]);
-								}
-							}
-							this.ZQ.addListener("changeSelection", function (e) {
-								this.ZE = [];
-								this.FP(0, 1, 200);
-								this.ZH = false;
-								this.ZG.setLabel(this.T.get("Scan"));
-							}, this);
-							oOptions.add(this.ZQ);
-
-							var la = new qx.ui.basic.Label().set({
-									value : this.T.get("min Level"),
-									textColor : "white",
-									margin : 5
-								});
-							oOptions.add(la);
-							var minlevel = Addons.LocalStorage.getserver("Basescanner_minLevel", "1");
-							this.ZY = new qx.ui.form.TextField(minlevel).set({
-									width : 50
-								});
-							oOptions.add(this.ZY);
-
-							this.ZK = [];
-							this.ZK[0] = new qx.ui.form.CheckBox(this.T.get("Player"));
-							this.ZK[0].setMargin(5);
-							this.ZK[0].setTextColor("white");
-							this.ZK[0].setValue(Addons.LocalStorage.getserver("Basescanner_Show0", false));
-							this.ZK[0].addListener("changeValue", function (e) {
-								this.ZE = [];
-								this.FP(0, 1, 200);
-								this.ZH = false;
-								this.ZG.setLabel(this.T.get("Scan"));
-							}, this);
-							oOptions.add(this.ZK[0]);
-							this.ZK[1] = new qx.ui.form.CheckBox(this.T.get("Bases"));
-							this.ZK[1].setMargin(5);
-							this.ZK[1].setTextColor("white");
-							this.ZK[1].setValue(Addons.LocalStorage.getserver("Basescanner_Show1", false));
-							this.ZK[1].addListener("changeValue", function (e) {
-								this.ZE = [];
-								this.FP(0, 1, 200);
-								this.ZH = false;
-								this.ZG.setLabel(this.T.get("Scan"));
-							}, this);
-							oOptions.add(this.ZK[1]);
-							this.ZK[2] = new qx.ui.form.CheckBox(this.T.get("Outpost"));
-							this.ZK[2].setMargin(5);
-							this.ZK[2].setTextColor("white");
-							this.ZK[2].setValue(Addons.LocalStorage.getserver("Basescanner_Show2", false));
-							this.ZK[2].addListener("changeValue", function (e) {
-								this.ZE = [];
-								this.FP(0, 1, 200);
-								this.ZH = false;
-								this.ZG.setLabel(this.T.get("Scan"));
-							}, this);
-							oOptions.add(this.ZK[2]);
-							this.ZK[3] = new qx.ui.form.CheckBox(this.T.get("Camp"));
-							this.ZK[3].setMargin(5);
-							this.ZK[3].setTextColor("white");
-							this.ZK[3].setValue(Addons.LocalStorage.getserver("Basescanner_Show3", true));
-							this.ZK[3].addListener("changeValue", function (e) {
-								this.ZE = [];
-								this.FP(0, 1, 200);
-								this.ZH = false;
-								this.ZG.setLabel(this.T.get("Scan"));
-							}, this);
-							oOptions.add(this.ZK[3], {
-								lineBreak : true
-							});
-
-							this.ZG = new qx.ui.form.Button(this.T.get("Scan")).set({
-									width : 100,
-									minWidth : 100,
-									maxWidth : 100,
-									height : 25,
-									margin : 5
-								});
-							this.ZG.addListener("execute", function () {
-
-								this.FE();
-							}, this);
-							oOptions.add(this.ZG);
-
-							var border = new qx.ui.decoration.Decorator(2, "solid", "blue");
-							this.ZV = new qx.ui.container.Composite(new qx.ui.layout.Basic()).set({
-									decorator : border,
-									backgroundColor : "red",
-									allowGrowX : false,
-									height : 20,
-									width : 200
-								});
-							this.ZU = new qx.ui.core.Widget().set({
-									decorator : null,
-									backgroundColor : "green",
-									width : 0
-								});
-							this.ZV.add(this.ZU);
-							this.ZX = new qx.ui.basic.Label("").set({
-									decorator : null,
-									textAlign : "center",
-									width : 200
-								});
-							this.ZV.add(this.ZX, {
-								left : 0,
-								top : -3
-							});
-							oOptions.add(this.ZV);
-
-							this.YZ = new qx.ui.form.Button(this.T.get("clear Cache")).set({
-									minWidth : 100,
-									height : 25,
-									margin : 5
-								});
-							this.YZ.addListener("execute", function () {
-								this.ZZ = [];
-							}, this);
-							oOptions.add(this.YZ);
-
-							this.ZK[4] = new qx.ui.form.CheckBox(this.T.get("Only center on World"));
-							this.ZK[4].setMargin(5);
-							this.ZK[4].setTextColor("white");
-							oOptions.add(this.ZK[4], {
-								lineBreak : true
-							});
-
-							this.ZJ = new qx.ui.form.SelectBox();
-							this.ZJ.setWidth(150);
-							this.ZJ.setHeight(25);
-							this.ZJ.setMargin(5);
-							var item = new qx.ui.form.ListItem("7 " + this.T.get(MaelstromTools.Statics.Tiberium) + " 5 " + this.T.get(MaelstromTools.Statics.Crystal), null, 7);
-							this.ZJ.add(item);
-							item = new qx.ui.form.ListItem("6 " + this.T.get(MaelstromTools.Statics.Tiberium) + " 6 " + this.T.get(MaelstromTools.Statics.Crystal), null, 6);
-							this.ZJ.add(item);
-							item = new qx.ui.form.ListItem("5 " + this.T.get(MaelstromTools.Statics.Tiberium) + " 7 " + this.T.get(MaelstromTools.Statics.Crystal), null, 5);
-							this.ZJ.add(item);
-							oOptions.add(this.ZJ);
-							this.ZD = new qx.ui.form.Button(this.T.get("Get Layouts")).set({
-									width : 120,
-									minWidth : 120,
-									maxWidth : 120,
-									height : 25,
-									margin : 5
-								});
-							this.ZD.addListener("execute", function () {
-								var layout = window.Addons.BaseScannerLayout.getInstance();
-								layout.openWindow(this.T.get("BaseScanner Layout"));
-							}, this);
-							this.ZD.setEnabled(false);
-							oOptions.add(this.ZD);
-
-							this.ZB = new qx.ui.container.Composite();
-							this.ZB.setLayout(new qx.ui.layout.Flow());
-							this.ZB.setWidth(750);
-							//oOptions.add(this.ZB, {flex:1});
-
-							var J = webfrontend.gui.layout.Loader.getInstance();
-							//var L = J.getLayout("playerbar", this);
-							//this._ZZ = J.getElement(L, "objid", 'lblplayer');
-
-
-							//this.tableSettings = new qx.ui.groupbox.GroupBox("Visable Columns");
-							//box.add(this.tableSettings, {flex:1});
-							var k = 2;
-							for (k = 2; k < this.ZL.getColumnCount(); k++) {
-								var index = k - 2;
-
-								this.ZR[index] = new qx.ui.form.CheckBox(this.ZL.getColumnName(k));
-								this.ZR[index].setValue(this.ZN.getTableColumnModel().isColumnVisible(k));
-								this.ZR[index].setTextColor("white");
-								this.ZR[index].index = k;
-								this.ZR[index].table = this.ZN;
-								this.ZR[index].addListener("changeValue", function (e) {
-									//console.log("click", e, e.getData(), this.index);
-									var tcm = this.table.getTableColumnModel();
-									tcm.setColumnVisible(this.index, e.getData());
-									Addons.LocalStorage.setserver("Basescanner_Column_" + this.index, e.getData());
-								});
-								this.ZB.add(this.ZR[index]);
-								//this.tableSettings.add( this.ZR[index] );
-							}
-
-							this.ZO = new qx.ui.form.Button("+").set({
-									margin : 5
-								});
-							this.ZO.addListener("execute", function () {
-								if (this.ZI) {
-									oOptions.addAfter(this.ZB, this.ZO);
-									this.ZO.setLabel("-");
-								} else {
-									oOptions.remove(this.ZB);
-									this.ZO.setLabel("+");
-								}
-								this.ZI = !this.ZI;
-							}, this);
-							this.ZO.setAlignX("right");
-							oOptions.add(this.ZO, {
-								lineBreak : true
-							});
-
-							this.ZF = oOptions;
-
-						} catch (e) {
-							console.debug("Addons.BaseScannerGUI.createOptions: ", e);
-						}
-					},
-					FD : function () {
-						//0.7
-						//var n = ClientLib.Data.MainData.GetInstance().get_Cities();
-						//var i = n.get_CurrentOwnCity();
-						var st = '<a href="https://sites.google.com/site/blindmanxdonate" target="_blank">Support Development of BlinDManX Addons</a>';
-						var l = new qx.ui.basic.Label().set({
-								value : st,
-								rich : true,
-								width : 800
-							});
-						this.ZP = l;
-					},
-					FE : function () {
-						var selectedBase = this.ZC.getSelection()[0].getModel();
-						ClientLib.Vis.VisMain.GetInstance().CenterGridPosition(selectedBase.get_PosX(), selectedBase.get_PosY()); //Load data of region
-						ClientLib.Vis.VisMain.GetInstance().Update();
-						ClientLib.Vis.VisMain.GetInstance().ViewUpdate();
-						ClientLib.Data.MainData.GetInstance().get_Cities().set_CurrentCityId(selectedBase.get_Id());
-
-						if (this.ZT) {
-							var obj = ClientLib.Data.WorldSector.WorldObjectCity.prototype;
-							var fa = foundfnkstring(obj['$ctor'], /this\.(.{6})=\(?\(?\(?g>>8\)?\&.*d\+=f;this\.(.{6})=\(/, "ClientLib.Data.WorldSector.WorldObjectCity", 2);
-							if (fa != null && fa[1].length == 6) {
-								obj.getLevel = function () {
-									return this[fa[1]];
-								};
-							} else {
-								console.error("Error - ClientLib.Data.WorldSector.WorldObjectCity.Level undefined");
-							}
-							if (fa != null && fa[2].length == 6) {
-								obj.getID = function () {
-									return this[fa[2]];
-								};
-							} else {
-								console.error("Error - ClientLib.Data.WorldSector.WorldObjectCity.ID undefined");
-							}
-
-							obj = ClientLib.Data.WorldSector.WorldObjectNPCBase.prototype;
-							var fb = foundfnkstring(obj['$ctor'], /100\){0,1};this\.(.{6})=Math.floor.*d\+=f;this\.(.{6})=\(/, "ClientLib.Data.WorldSector.WorldObjectNPCBase", 2);
-							if (fb != null && fb[1].length == 6) {
-								obj.getLevel = function () {
-									return this[fb[1]];
-								};
-							} else {
-								console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCBase.Level undefined");
-							}
-							if (fb != null && fb[2].length == 6) {
-								obj.getID = function () {
-									return this[fb[2]];
-								};
-							} else {
-								console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCBase.ID undefined");
-							}
-
-							obj = ClientLib.Data.WorldSector.WorldObjectNPCCamp.prototype;
-							var fc = foundfnkstring(obj['$ctor'], /100\){0,1};this\.(.{6})=Math.floor.*this\.(.{6})=\(*g\>\>(22|0x16)\)*\&.*=-1;\}this\.(.{6})=\(/, "ClientLib.Data.WorldSector.WorldObjectNPCCamp", 4);
-							if (fc != null && fc[1].length == 6) {
-								obj.getLevel = function () {
-									return this[fc[1]];
-								};
-							} else {
-								console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCCamp.Level undefined");
-							}
-							if (fc != null && fc[2].length == 6) {
-								obj.getCampType = function () {
-									return this[fc[2]];
-								};
-							} else {
-								console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCCamp.CampType undefined");
-							}
-
-							if (fc != null && fc[4].length == 6) {
-								obj.getID = function () {
-									return this[fc[4]];
-								};
-							} else {
-								console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCCamp.ID undefined");
-							}
-							this.ZT = false;
-						}
-
-						//Firstscan
-						if (this.ZE == null) {
-							this.ZH = false;
-							this.ZG.setLabel("Pause");
-							this.ZD.setEnabled(false);
-							window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FJ()", 1000);
-							return;
-						}
-						//After Pause
-						var c = 0;
-						for (i = 0; i < this.ZE.length; i++) {
-							if (this.ZE[i][1] == -1) {
-								c++;
-							}
-						}
-
-						if (!this.ZH) {
-							this.ZG.setLabel("Pause");
-							this.ZD.setEnabled(false);
-							if (c > 0) {
-								this.ZH = true;
-								window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FG()", 1000);
-								return;
-							} else {
-								this.ZH = false;
-								window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FJ()", 1000);
-							}
-						} else {
-							this.ZH = false;
-							this.ZG.setLabel(this.T.get("Scan"));
-						}
-
-					},
-					FP : function (value, max, maxwidth) {
-						if (this.ZU != null && this.ZX != null) {
-							this.ZU.setWidth(parseInt(value / max * maxwidth, 10));
-							this.ZX.setValue(value + "/" + max);
-						}
-					},
-					FJ : function () {
-						try {
-							this.ZM = {};
-							this.ZE = [];
-							var selectedBase = this.ZC.getSelection()[0].getModel();
-							Addons.LocalStorage.setserver("Basescanner_LastCityID", selectedBase.get_Id());
-							var ZQ = this.ZQ.getSelection()[0].getModel();
-							Addons.LocalStorage.setserver("Basescanner_Cplimiter", ZQ);
-							Addons.LocalStorage.setserver("Basescanner_minLevel", this.ZY.getValue());
-
-							var c1 = this.ZK[0].getValue();
-							var c2 = this.ZK[1].getValue();
-							var c3 = this.ZK[2].getValue();
-							var c4 = this.ZK[3].getValue();
-							var c5 = parseInt(this.ZY.getValue(), 10);
-							//console.log("Select", c1, c2, c3,c4,c5);
-							Addons.LocalStorage.setserver("Basescanner_Show0", c1);
-							Addons.LocalStorage.setserver("Basescanner_Show1", c2);
-							Addons.LocalStorage.setserver("Basescanner_Show2", c3);
-							Addons.LocalStorage.setserver("Basescanner_Show3", c4);
-							var posX = selectedBase.get_PosX();
-							var posY = selectedBase.get_PosY();
-							var scanX = 0;
-							var scanY = 0;
-							var world = ClientLib.Data.MainData.GetInstance().get_World();
-							console.info("Scanning from: " + selectedBase.get_Name());
-
-							// world.CheckAttackBase (System.Int32 targetX ,System.Int32 targetY) -> ClientLib.Data.EAttackBaseResult
-							// world.CheckAttackBaseRegion (System.Int32 targetX ,System.Int32 targetY) -> ClientLib.Data.EAttackBaseResult
-							var t1 = true;
-							var t2 = true;
-							var t3 = true;
-
-							var maxAttackDistance = ClientLib.Data.MainData.GetInstance().get_Server().get_MaxAttackDistance();
-							for (scanY = posY - Math.floor(maxAttackDistance + 1); scanY <= posY + Math.floor(maxAttackDistance + 1); scanY++) {
-								for (scanX = posX - Math.floor(maxAttackDistance + 1); scanX <= posX + Math.floor(maxAttackDistance + 1); scanX++) {
-									var distX = Math.abs(posX - scanX);
-									var distY = Math.abs(posY - scanY);
-									var distance = Math.sqrt((distX * distX) + (distY * distY));
-									if (distance <= maxAttackDistance) {
-										var object = world.GetObjectFromPosition(scanX, scanY);
-										var loot = {};
-										if (object) {
-											//console.log(object);
-
-											if (object.Type == 1 && t1) {
-												//console.log("object typ 1");
-												//objfnkstrON(object);
-												//t1 = !t1;
-											}
-											if (object.Type == 2 && t2) {
-												//console.log("object typ 2");
-												//objfnkstrON(object);
-												//t2 = !t2;
-											}
-
-											if (object.Type == 3 && t3) {
-
-												//console.log("object typ 3");
-												//objfnkstrON(object);
-												//t3 = !t3;
-											}
-
-											if (object.Type == 3) {
-												if (c5 <= parseInt(object.getLevel(), 10)) {
-													//console.log(object);
-												}
-											}
-
-											//if(object.ConditionBuildings>0){
-											var needcp = selectedBase.CalculateAttackCommandPointCostToCoord(scanX, scanY);
-											if (needcp <= ZQ && typeof object.getLevel == 'function') {
-												if (c5 <= parseInt(object.getLevel(), 10)) {
-													// 0:ID , 1:Scanned, 2:Name, 3:Location, 4:Level, 5:Tib, 6:Kristal, 7:Credits, 8:Forschung, 9:Kristalfelder, 10:Tiberiumfelder,
-													// 11:ConditionBuildings,12:ConditionDefense,13: CP pro Angriff , 14: defhp/offhp , 15:sum tib,krist,credits, 16: sum/cp
-													var d = this.FL(object.getID(), 0);
-													var e = this.FL(object.getID(), 1);
-													if (e != null) {
-														this.ZM[object.getID()] = e;
-													}
-
-													if (object.Type == 1 && c1) { //User
-														//console.log("object ID LEVEL", object.getID() ,object.getLevel() );
-														if (d != null) {
-															this.ZE.push(d);
-														} else {
-															this.ZE.push([object.getID(),  - 1, this.T.get("Player"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0]);
-														}
-													}
-													if (object.Type == 2 && c2) { //basen
-														//console.log("object ID LEVEL", object.getID() ,object.getLevel() );
-														if (d != null) {
-															this.ZE.push(d);
-														} else {
-															this.ZE.push([object.getID(),  - 1, this.T.get("Bases"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0]);
-														}
-													}
-													if (object.Type == 3 && (c3 || c4)) { //Lager Vposten
-														//console.log("object ID LEVEL", object.getID() ,object.getLevel() );
-														if (d != null) {
-															if (object.getCampType() == 2 && c4) {
-																this.ZE.push(d);
-															}
-															if (object.getCampType() == 3 && c3) {
-																this.ZE.push(d);
-															}
-
-														} else {
-															if (object.getCampType() == 2 && c4) {
-																this.ZE.push([object.getID(),  - 1, this.T.get("Camp"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0]);
-															}
-															if (object.getCampType() == 3 && c3) {
-																this.ZE.push([object.getID(),  - 1, this.T.get("Outpost"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0]);
-															}
-														}
-													}
-												}
-											}
-											//}
-										}
-									}
-								}
-							}
-							this.ZH = true;
-							this.ZL.setData(this.ZE);
-							this.FP(0, this.ZE.length, 200);
-							this.ZL.sortByColumn(4, false); //Sort form Highlevel to Lowlevel
-							if (this.YY.name != "DR01D")
-								window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FG()", 50);
-						} catch (ex) {
-							console.debug("Maelstrom_Basescanner FJ error: ", ex);
-						}
-					},
-					FG : function () {
-						try {
-							var retry = false;
-							var loops = 0;
-							var maxLoops = 10;
-							var i = 0;
-							var sleeptime = 150;
-							while (!retry) {
-								var ncity = null;
-								var selectedid = 0;
-								var id = 0;
-								if (this.ZE == null) {
-									console.warn("data null: ");
-									this.ZH = false;
-									break;
-								}
-								for (i = 0; i < this.ZE.length; i++) {
-									// 1= "LoadState"
-									if (this.ZE[i][1] == -1) {
-										break;
-									}
-								}
-
-								if (i == this.ZE.length) {
-									this.ZH = false;
-								}
-								this.FP(i, this.ZE.length, 200); //Progressbar
-								if (this.ZE[i] == null) {
-									console.warn("data[i] null: ");
-									this.ZH = false;
-									this.ZG.setLabel(this.T.get("Scan"));
-									this.ZD.setEnabled(true);
-									break;
-								}
-								posData = this.ZE[i][3];
-								/* make sure coordinates are well-formed enough */
-								if (posData != null && posData.split(':').length == 2) {
-									posX = parseInt(posData.split(':')[0]);
-									posY = parseInt(posData.split(':')[1]);
-									/* check if there is any base */
-									var playerbase = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
-									var world = ClientLib.Data.MainData.GetInstance().get_World();
-									var foundbase = world.CheckFoundBase(posX, posY, playerbase.get_PlayerId(), playerbase.get_AllianceId());
-									//console.log("foundbase",foundbase);
-									this.ZE[i][19] = (foundbase == 0) ? true : false;
-									//var obj = ClientLib.Vis.VisMain.GetInstance().get_SelectedObject();
-									//console.log("obj", obj);
-									id = this.ZE[i][0];
-									ClientLib.Data.MainData.GetInstance().get_Cities().set_CurrentCityId(id);
-									ncity = ClientLib.Data.MainData.GetInstance().get_Cities().GetCity(id);
-									//console.log("ncity", ncity);
-									if (ncity != null) {
-										if (!ncity.get_IsGhostMode()) {
-											//if(ncity.get_Name() != null)
-											//console.log("ncity.get_Name ", ncity.get_Name() , ncity.get_CityBuildingsData().get_Buildings());
-											//var cityBuildings = ncity.get_CityBuildingsData();
-											var cityUnits = ncity.get_CityUnitsData();
-											if (cityUnits != null) { // cityUnits !=null können null sein
-												//console.log("ncity.cityUnits", cityUnits );
-
-												var selectedBase = this.ZC.getSelection()[0].getModel();
-												var buildings = ncity.get_Buildings().d;
-												var defenseUnits = cityUnits.get_DefenseUnits().d;
-												var offensivUnits = selectedBase.get_CityUnitsData().get_OffenseUnits().d;
-												//console.log(buildings,defenseUnits,offensivUnits);
-
-												if (buildings != null) //defenseUnits !=null können null sein
-												{
-													var buildingLoot = getResourcesPart(buildings);
-													var unitLoot = getResourcesPart(defenseUnits);
-
-													//console.log("buildingLoot", buildingLoot);
-													//console.log("unitLoot", unitLoot);
-													this.ZE[i][2] = ncity.get_Name();
-													this.ZE[i][5] = buildingLoot[ClientLib.Base.EResourceType.Tiberium] + unitLoot[ClientLib.Base.EResourceType.Tiberium];
-													this.ZE[i][6] = buildingLoot[ClientLib.Base.EResourceType.Crystal] + unitLoot[ClientLib.Base.EResourceType.Crystal];
-													this.ZE[i][7] = buildingLoot[ClientLib.Base.EResourceType.Gold] + unitLoot[ClientLib.Base.EResourceType.Gold];
-													this.ZE[i][8] = buildingLoot[ClientLib.Base.EResourceType.ResearchPoints] + unitLoot[ClientLib.Base.EResourceType.ResearchPoints];
-													//console.log(posX,posY,"GetBuildingsConditionInPercent", ncity.GetBuildingsConditionInPercent() );
-													if (ncity.GetBuildingsConditionInPercent() != 0) {
-														this.ZA = 0;
-														if (this.ZE[i][5] != 0) {
-															var c = 0;
-															var t = 0;
-															var m = 0;
-															var k = 0;
-															var l = 0;
-															this.ZM[id] = new Array(9);
-															for (m = 0; m < 9; m++) {
-																this.ZM[id][m] = new Array(8);
-															}
-															for (k = 0; k < 9; k++) {
-																for (l = 0; l < 8; l++) {
-																	//console.log( ncity.GetResourceType(k,l) );
-																	switch (ncity.GetResourceType(k, l)) {
-																	case 1:
-																		/* Crystal */
-																		this.ZM[id][k][l] = 1;
-																		c++;
-																		break;
-																	case 2:
-																		/* Tiberium */
-																		this.ZM[id][k][l] = 2;
-																		t++;
-																		break;
-																	default:
-																		//none
-																		break;
-																	}
-																}
-															}
-															//console.log( c,t );
-
-
-															this.ZE[i][9] = c;
-															this.ZE[i][10] = t;
-															this.ZE[i][11] = ncity.GetBuildingsConditionInPercent();
-															this.ZE[i][12] = ncity.GetDefenseConditionInPercent();
-
-															try {
-																var u = offensivUnits;
-																//console.log("OffenseUnits",u);
-																var offhp = 0;
-																var defhp = 0;
-																for (var g in u) {
-																	offhp += u[g].get_Health();
-																}
-
-																u = defenseUnits;
-																//console.log("DefUnits",u);
-																for (var g in u) {
-																	defhp += u[g].get_Health();
-																}
-
-																u = buildings;
-																//console.log("DefUnits",u);
-																for (var g in u) {
-																	//var id=0;
-																	//console.log("MdbUnitId",u[g].get_MdbUnitId());
-																	var mid = u[g].get_MdbUnitId();
-																	//DF
-																	if (mid == 158 || mid == 131 || mid == 195) {
-																		this.ZE[i][18] = 8 - u[g].get_CoordY();
-																	}
-																	//CY
-																	if (mid == 112 || mid == 151 || mid == 177) {
-																		this.ZE[i][17] = 8 - u[g].get_CoordY();
-																	}
-																}
-
-																//console.log("HPs",offhp,defhp, (defhp/offhp) );
-															} catch (x) {
-																console.debug("HPRecord", x);
-															}
-															this.ZE[i][14] = (defhp / offhp);
-
-															this.ZE[i][15] = this.ZE[i][5] + this.ZE[i][6] + this.ZE[i][7];
-															this.ZE[i][16] = this.ZE[i][15] / this.ZE[i][13];
-
-															this.ZE[i][1] = 0;
-															retry = true;
-															console.info(ncity.get_Name(), " finish");
-															this.ZA = 0;
-															this.countlastidchecked = 0;
-															//console.log(this.ZE[i],this.ZM[id],id);
-															this.FK(this.ZE[i], this.ZM[id], id);
-															//update table
-															this.ZL.setData(this.ZE);
-														}
-													} else {
-														if (this.ZA > 250) {
-															console.info(this.ZE[i][2], " on ", posX, posY, " removed (GetBuildingsConditionInPercent == 0)");
-															this.ZE.splice(i, 1); //entfernt element aus array
-															this.ZA = 0;
-															this.countlastidchecked = 0;
-															break;
-														}
-														this.ZA++;
-													}
-												}
-											}
-										} else {
-											console.info(this.ZE[i][2], " on ", posX, posY, " removed (IsGhostMode)");
-											this.ZE.splice(i, 1); //entfernt element aus array
-											break;
-										}
-									}
-								}
-								loops++;
-								if (loops >= maxLoops) {
-									retry = true;
-									break;
-								}
-							}
-
-							//console.log("getResourcesByID end ", this.ZH, Addons.BaseScannerGUI.getInstance().isVisible());
-							if (this.lastid != i) {
-								this.lastid = i;
-								this.countlastidchecked = 0;
-								this.ZA = 0;
-							} else {
-								if (this.countlastidchecked > 16) {
-									console.info(this.ZE[i][2], " on ", posX, posY, " removed (found no data)");
-									this.ZE.splice(i, 1); //entfernt element aus array
-									this.countlastidchecked = 0;
-								} else if (this.countlastidchecked > 10) {
-									sleeptime = 500;
-								} else if (this.countlastidchecked > 4) {
-									sleeptime = 250;
-								}
-								this.countlastidchecked++;
-							}
-							//console.log("this.ZH", this.ZH);
-							if (this.ZH && Addons.BaseScannerGUI.getInstance().isVisible()) {
-								//console.log("loop");
-								window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FG()", sleeptime);
-							} else {
-								this.ZG.setLabel(this.T.get("Scan"));
-								this.ZH = false;
-							}
-						} catch (e) {
-							console.debug("MaelstromTools_Basescanner getResources", e);
-						}
-					},
-					FK : function (dataa, datab, id) {
-						this.ZZ.push(dataa);
-						this.ZS[id] = datab;
-					},
-					FL : function (id, t) {
-						if (t == 0) {
-							for (var i = 0; i < this.ZZ.length; i++) {
-								if (this.ZZ[i][0] == id) {
-									return this.ZZ[i];
-								}
-							}
-						} else {
-							if (this.ZS[id]) {
-								return this.ZS[id];
-							}
-						}
-						return null;
-					}
-
-				}
-			});
-
-			qx.Class.define("Addons.BaseScannerLayout", {
-				type : "singleton",
-				extend : qx.ui.window.Window,
-				construct : function () {
-					try {
-						this.base(arguments);
-						console.info("Addons.BaseScannerLayout " + window.__msbs_version);
-						this.setWidth(820);
-						this.setHeight(400);
-						this.setContentPadding(10);
-						this.setShowMinimize(false);
-						this.setShowMaximize(true);
-						this.setShowClose(true);
-						this.setResizable(true);
-						this.setAllowMaximize(true);
-						this.setAllowMinimize(false);
-						this.setAllowClose(true);
-						this.setShowStatusbar(false);
-						this.setDecorator(null);
-						this.setPadding(10);
-						this.setLayout(new qx.ui.layout.Grow());
-
-						this.ZW = [];
-						this.removeAll();
-						this.ZZ = new qx.ui.container.Scroll();
-						this.ZY = new qx.ui.container.Composite(new qx.ui.layout.Flow());
-						this.add(this.ZZ, {
-							flex : 3
-						});
-						this.ZZ.add(this.ZY);
-						//this.FO();
-					} catch (e) {
-						console.debug("Addons.BaseScannerLayout.construct: ", e);
-					}
-				},
-				members : {
-					ZW : null,
-					ZZ : null,
-					ZY : null,
-					ZX : null,
-					openWindow : function (title) {
-						try {
-							this.setCaption(title);
-							if (this.isVisible()) {
-								this.close();
-							} else {
-								this.open();
-								this.moveTo(100, 100);
-								this.FO();
-							}
-						} catch (e) {
-							console.log("Addons.BaseScannerLayout.openWindow: ", e);
-						}
-					},
-					FO : function () {
-						var ZM = window.Addons.BaseScannerGUI.getInstance().ZM;
-						var ZE = window.Addons.BaseScannerGUI.getInstance().ZE;
-						this.ZX = [];
-						var selectedtype = window.Addons.BaseScannerGUI.getInstance().ZJ.getSelection()[0].getModel();
-						//console.log("FO: " , ZM.length);
-						var rowDataLine = null;
-						if (ZE == null) {
-							console.info("ZE null: ");
-							return;
-						}
-						//console.log("FO: " , ZM);
-						this.ZW = [];
-						var id;
-						var i;
-						var x;
-						var y;
-						var a;
-						for (id in ZM) {
-							for (i = 0; i < ZE.length; i++) {
-								if (ZE[i][0] == id) {
-									rowDataLine = ZE[i];
-								}
-							}
-
-							if (rowDataLine == null) {
-								continue;
-							}
-							//console.log("ST",selectedtype,rowDataLine[10]);
-							if (selectedtype > 4 && selectedtype < 8) {
-								if (selectedtype != rowDataLine[10]) {
-									continue;
-								}
-							} else {
-								continue;
-							}
-
-							posData = rowDataLine[3];
-							if (posData != null && posData.split(':').length == 2) {
-								posX = parseInt(posData.split(':')[0]);
-								posY = parseInt(posData.split(':')[1]);
-							}
-							var st = '<table border="2" cellspacing="0" cellpadding="0">';
-							var link = rowDataLine[2] + " - " + rowDataLine[3];
-							st = st + '<tr><td colspan="9"><font color="#FFF">' + link + '</font></td></tr>';
-							for (y = 0; y < 8; y++) {
-								st = st + "<tr>";
-								for (x = 0; x < 9; x++) {
-									var img = "";
-									var res = ZM[id][x][y];
-									//console.log("Res ",res);
-									switch (res == undefined ? 0 : res) {
-									case 2:
-										//console.log("Tiberium " , MT_Base.images[MaelstromTools.Statics.Tiberium] );
-										img = '<img width="14" height="14" src="' + MT_Base.images[MaelstromTools.Statics.Tiberium] + '">';
-										break;
-									case 1:
-										//console.log("Crystal ");
-										img = '<img width="14" height="14" src="' + MT_Base.images[MaelstromTools.Statics.Crystal] + '">';
-										break;
-									default:
-										img = '<img width="14" height="14" src="' + MT_Base.images["Emptypixels"] + '">';
-										break;
-									}
-									st = st + "<td>" + img + "</td>";
-								}
-								st = st + "</tr>";
-							}
-							st = st + "</table>";
-							//console.log("setWidgetLabels ", st);
-							var l = new qx.ui.basic.Label().set({
-									backgroundColor : "#303030",
-									value : st,
-									rich : true
-								});
-							l.cid = id;
-							this.ZX.push(id);
-							l.addListener("click", function (e) {
-
-								//console.log("clickid ", this.cid, );
-								//webfrontend.gui.UtilView.openCityInMainWindow(this.cid);
-								var bk = qx.core.Init.getApplication();
-								bk.getBackgroundArea().closeCityInfo();
-								bk.getPlayArea().setView(ClientLib.Data.PlayerAreaViewMode.pavmCombatSetupDefense, this.cid, 0, 0);
-								var q = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
-								if (q != null)
-									q.get_CityArmyFormationsManager().set_CurrentTargetBaseId(this.cid);
-
-							});
-							l.setReturnValue = id;
-							this.ZW.push(l);
-						}
-						this.ZY.removeAll();
-						var b = 0;
-						var c = 0;
-						//console.log("this.ZW.length",this.ZW.length);
-						for (a = 0; a < this.ZW.length; a++) {
-							this.ZY.add(this.ZW[a], {
-								row : b,
-								column : c
-							});
-							c++;
-							if (c > 4) {
-								c = 0;
-								b++;
-							}
-						}
-					}
-				}
-			});
-
-			qx.Class.define("Addons.LocalStorage", {
-				type : "static",
-				extend : qx.core.Object,
-				statics : {
-					isSupported : function () {
-						return typeof(localStorage) !== "undefined";
-					},
-					isdefined : function (key) {
-						return (localStorage[key] !== "undefined" && localStorage[key] != null);
-					},
-					isdefineddata : function (data, key) {
-						return (data[key] !== "undefined" && data[key] != null);
-					},
-					setglobal : function (key, value) {
-						try {
-							if (Addons.LocalStorage.isSupported()) {
-								localStorage[key] = JSON.stringify(value);
-							}
-						} catch (e) {
-							console.debug("Addons.LocalStorage.setglobal: ", e);
-						}
-					},
-					getglobal : function (key, defaultValue) {
-						try {
-							if (Addons.LocalStorage.isSupported()) {
-								if (Addons.LocalStorage.isdefined(key)) {
-									return JSON.parse(localStorage[key]);
-								}
-							}
-						} catch (e) {
-							console.log("Addons.LocalStorage.getglobal: ", e);
-						}
-						return defaultValue;
-					},
-					setserver : function (key, value) {
-						try {
-							if (Addons.LocalStorage.isSupported()) {
-								var sn = ClientLib.Data.MainData.GetInstance().get_Server().get_Name();
-								var data;
-								if (Addons.LocalStorage.isdefined(sn)) {
-									try {
-										data = JSON.parse(localStorage[sn]);
-										if (!(typeof data === "object")) {
-											data = {};
-											console.debug("LocalStorage data from server not null, but not object");
-										}
-									} catch (e) {
-										console.debug("LocalStorage data from server not null, but parsererror", e);
-										data = {};
-									}
-								} else {
-									data = {};
-								}
-								data[key] = value;
-								localStorage[sn] = JSON.stringify(data);
-							}
-						} catch (e) {
-							console.debug("Addons.LocalStorage.setserver: ", e);
-						}
-					},
-					getserver : function (key, defaultValue) {
-						try {
-							if (Addons.LocalStorage.isSupported()) {
-								var sn = ClientLib.Data.MainData.GetInstance().get_Server().get_Name();
-								if (Addons.LocalStorage.isdefined(sn)) {
-									var data = JSON.parse(localStorage[sn]);
-									if (Addons.LocalStorage.isdefineddata(data, key)) {
-										return data[key];
-									}
-								}
-							}
-						} catch (e) {
-							console.log("Addons.LocalStorage.getserver: ", e);
-						}
-						return defaultValue;
-					}
-				}
-			});
-
-			if(typeof Addons.Language === 'undefined'){
-				qx.Class.define("Addons.Language", {
-					type : "singleton",
-					extend : qx.core.Object,
-					members : {
-						d : {},
-						debug : false,
-						addtranslateobj : function (o) {
-							if ( o.hasOwnProperty("main") ){
-								this.d[o.main.toString()] = o;
-								if(this.debug){
-									console.log("Translate Added ", o.main.toString() );
-								}
-								delete o.main;
-							} else {
-								console.debug("Addons.Language.addtranslateobj main not define");
-							}
-						},
-						get : function (t) {
-							var locale = qx.locale.Manager.getInstance().getLocale();
-							var loc = locale.split("_")[0];
-							if ( this.d.hasOwnProperty(t) ){
-								if ( this.d[t].hasOwnProperty(loc) ){
-									return this.d[t][loc];
-								}
-							}
-							if(this.debug){
-								console.debug("Addons.Language.get ", t, " not translate for locale ", loc);
-							}
-							return t;
-						}
-					}
-				});
-			}
-
-			qx.Class.define("qx.ui.table.cellrenderer.Replace", {
-				extend : qx.ui.table.cellrenderer.Default,
-
-				properties : {
-
-					replaceMap : {
-						check : "Object",
-						nullable : true,
-						init : null
-					},
-					replaceFunction : {
-						check : "Function",
-						nullable : true,
-						init : null
-					}
-				},
-				members : {
-					// overridden
-					_getContentHtml : function (cellInfo) {
-						var value = cellInfo.value;
-						var replaceMap = this.getReplaceMap();
-						var replaceFunc = this.getReplaceFunction();
-						var label;
-
-						// use map
-						if (replaceMap) {
-							label = replaceMap[value];
-							if (typeof label != "undefined") {
-								cellInfo.value = label;
-								return qx.bom.String.escape(this._formatValue(cellInfo));
-							}
-						}
-
-						// use function
-						if (replaceFunc) {
-							cellInfo.value = replaceFunc(value);
-						}
-						return qx.bom.String.escape(this._formatValue(cellInfo));
-					},
-
-					addReversedReplaceMap : function () {
-						var map = this.getReplaceMap();
-						for (var key in map) {
-							var value = map[key];
-							map[value] = key;
-						}
-						return true;
-					}
-				}
-			});
-
-
-			console.info("Maelstrom_Basescanner initalisiert");
-
-			var T = Addons.Language.getInstance();
-			T.debug = false;
-			T.addtranslateobj( {main:"Point", de: "Position", pt: "Position", fr: "Position", es: "Posición"} );
-			T.addtranslateobj( {main:"BaseScanner Overview", de: "Basescanner Übersicht", pt: "Visão geral do scanner de base", fr: "Aperçu du scanner de base", es: "Vista general"} );
-			T.addtranslateobj( {main:"Scan", de: "Scannen", pt: "Esquadrinhar", fr: "Balayer", es: "Escanear"} );
-			T.addtranslateobj( {main:"Location", de: "Lage", pt: "localização", fr: "Emplacement", es: "Ubicación"} );
-			T.addtranslateobj( {main:"Player", de: "Spieler", pt: "Jogador", fr: "Joueur", es:"Jugador"} );
-			T.addtranslateobj( {main:"Bases", de: "Bases", pt: "Bases", fr: "Bases", es: "Bases"} );
-			T.addtranslateobj( {main:"Camp,Outpost", de: "Lager,Vorposten", pt: "Camp,posto avançado", fr: "Camp,avant-poste", es: "Camp.,puesto avanz."} );
-			T.addtranslateobj( {main:"Camp", de: "Lager", pt: "Camp", fr: "Camp", es: "Campamento"} );
-			T.addtranslateobj( {main:"Outpost", de: "Vorposten", pt: "posto avançado", fr: "avant-poste", es:"Puesto avanzado"} );
-			T.addtranslateobj( {main:"BaseScanner Layout", de: "BaseScanner Layout", pt: "Layout da Base de Dados de Scanner", fr: "Mise scanner de base", es: "Diseños de BaseScanner"} );
-			T.addtranslateobj( {main:"Show Layouts", de: "Layouts anzeigen", pt: "Mostrar Layouts", fr: "Voir Layouts", es:"Mostrar diseños"} );
-			T.addtranslateobj( {main:"Building state", de: "Gebäudezustand", pt: "construção do Estado", fr: "construction de l'État", es:"Estado de construcción"} );
-			T.addtranslateobj( {main:"Defense state", de: "Verteidigungszustand", pt: "de Defesa do Estado", fr: "défense de l'Etat", es:"Estado de defensa"} );
-			T.addtranslateobj( {main:"CP", de: "KP", pt: "CP", fr: "CP", es:"PM"} );
-			T.addtranslateobj( {main:"CP Limit", de: "KP begrenzen", pt: "CP limitar", fr: "CP limiter", es:"Límites de PM"} );
-			T.addtranslateobj( {main:"min Level", de: "min. Level", pt: "nível mínimo", fr: "niveau minimum", es:"Nivel mínimo"} );
-			T.addtranslateobj( {main:"clear Cache", de: "Cache leeren", pt: "limpar cache", fr: "vider le cache", es:"Borrar caché"} );
-			T.addtranslateobj( {main:"Only center on World", de: "Nur auf Welt zentrieren", pt: "Único centro no Mundial", fr: "Seul centre sur World", es:"Sólo el centro del mundo"} );
-			T.addtranslateobj( {main:"base set up at", de: "Basis errichtbar", pt: "base de configurar a", fr: "mis en place à la base", es:"configuración de base en"} );
-			T.addtranslateobj( {main:"Infantry", de: "Infanterie", pt: "Infantaria", fr: "Infanterie", es:"Infantería"} );
-			T.addtranslateobj( {main:"Vehicle", de: "Fahrzeuge", pt: "Veículos", fr: "Vehicule", es:"Vehículo"} );
-			T.addtranslateobj( {main:"Aircraft", de: "Flugzeuge", pt: "Aeronaves", fr: "Aviation", es:"Aviación"} );
-			T.addtranslateobj( {main:"Tiberium", de: "Tiberium", pt: "Tibério", fr: "Tiberium", es:"Tiberio"} );
-			T.addtranslateobj( {main:"Crystal", de: "Kristalle", pt: "Cristal", fr: "Cristal", es:"Cristal"} );
-			T.addtranslateobj( {main:"Power", de: "Strom", pt: "Potência", fr: "Energie", es:"Energía"} );
-			T.addtranslateobj( {main:"Dollar", de: "Credits", pt: "Créditos", fr: "Crédit", es:"Créditos"} );
-			T.addtranslateobj( {main:"Research", de: "Forschung", pt: "Investigação", fr: "Recherche", es:"Investigación"} );
-			T.addtranslateobj( {main:"-----", de: "--", pt: "--", fr: "--", es: "-----"} );
-
-
-
-
-			var MT_Lang = null;
-			var MT_Cache = null;
-			var MT_Base = null;
-			var fileManager = null;
-			var lastid = 0;
-			var countlastidchecked = 0;
-			fileManager = ClientLib.File.FileManager.GetInstance();
-			MT_Lang = window.MaelstromTools.Language.getInstance();
-			MT_Cache = window.MaelstromTools.Cache.getInstance();
-			MT_Base = window.MaelstromTools.Base.getInstance();
-
-			MT_Base.createNewImage("BaseScanner", "ui/icons/icon_item.png", fileManager);
-			MT_Base.createNewImage("Emptypixels", "ui/menues/main_menu/misc_empty_pixel.png", fileManager);
-			var openBaseScannerOverview = MT_Base.createDesktopButton(T.get("BaseScanner Overview") + "version " + window.__msbs_version, "BaseScanner", false, MT_Base.desktopPosition(2));
-			openBaseScannerOverview.addListener("execute", function () {
-				Addons.BaseScannerGUI.getInstance().openWindow(T.get("BaseScanner Overview") + " version " + window.__msbs_version);
-			}, this);
-			Addons.BaseScannerGUI.getInstance().addListener("close", Addons.BaseScannerGUI.getInstance().FN, Addons.BaseScannerGUI.getInstance());
-			//this.addListener("resize", function(){ }, this );
-
-			MT_Base.addToMainMenu("BaseScanner", openBaseScannerOverview);
-
-			if(typeof Addons.AddonMainMenu !== 'undefined'){
-				var addonmenu = Addons.AddonMainMenu.getInstance();
-				addonmenu.AddMainMenu("Basescanner", function () {
-					Addons.BaseScannerGUI.getInstance().openWindow(T.get("BaseScanner Overview") + " version " + window.__msbs_version);
-				},"ALT+B");
-			}
-
-		}
-
-		function getResourcesPart(cityEntities) {
-			try {
-				var loot = [0, 0, 0, 0, 0, 0, 0, 0];
-				if (cityEntities == null) {
-					return loot;
-				}
-
-				for (var i in cityEntities) {
-					var cityEntity = cityEntities[i];
-					var unitLevelRequirements = MaelstromTools.Wrapper.GetUnitLevelRequirements(cityEntity);
-
-					for (var x = 0; x < unitLevelRequirements.length; x++) {
-						loot[unitLevelRequirements[x].Type] += unitLevelRequirements[x].Count * cityEntity.get_HitpointsPercent();
-						if (cityEntity.get_HitpointsPercent() < 1.0) {
-							// destroyed
-
-						}
-					}
-				}
-				return loot;
-			} catch (e) {
-				console.debug("MaelstromTools_Basescanner getResourcesPart", e);
-			}
-		}
-
-		function objfnkstrON(obj) {
-			var key;
-			for (key in obj) {
-				if (typeof(obj[key]) == "function") {
-					var s = obj[key].toString();
-					console.debug(key, s);
-					//var protostring = s.replace(/\s/gim, "");
-					//console.log(key, protostring);
-				}
-			}
-		}
-
-		function foundfnkstring(obj, redex, objname, n) {
-			var redexfounds = [];
-			var s = obj.toString();
-			var protostring = s.replace(/\s/gim, "");
-			redexfounds = protostring.match(redex);
-			var i;
-			for (i = 1; i < (n + 1); i++) {
-				if (redexfounds != null && redexfounds[i].length == 6) {
-					console.debug(objname, i, redexfounds[i]);
-				} else if (redexfounds != null && redexfounds[i].length > 0) {
-					console.warn(objname, i, redexfounds[i]);
-				} else {
-					console.error("Error - ", objname, i, "not found");
-					console.warn(objname, protostring);
-				}
-			}
-			return redexfounds;
-		}
-
-		function MaelstromTools_Basescanner_checkIfLoaded() {
-			try {
-				if (typeof qx != 'undefined' && typeof MaelstromTools != 'undefined') {
-					createMaelstromTools_Basescanner();
-				} else {
-					window.setTimeout(MaelstromTools_Basescanner_checkIfLoaded, 1000);
-				}
-			} catch (e) {
-				console.debug("MaelstromTools_Basescanner_checkIfLoaded: ", e);
-			}
-		}
-		if (/commandandconquer\.com/i.test(document.domain)) {
-			window.setTimeout(MaelstromTools_Basescanner_checkIfLoaded, 10000);
-		}
-	};
-	try {
-		var MaelstromScript_Basescanner = document.createElement("script");
-		MaelstromScript_Basescanner.innerHTML = "(" + MaelstromTools_Basescanner.toString() + ")();";
-		MaelstromScript_Basescanner.type = "text/javascript";
-		if (/commandandconquer\.com/i.test(document.domain)) {
-			document.getElementsByTagName("head")[0].appendChild(MaelstromScript_Basescanner);
-		}
-	} catch (e) {
-		console.debug("MaelstromTools_Basescanner: init error: ", e);
-	}
+  var MaelstromTools_Basescanner = function () {
+    window.__msbs_version = "1.9.1";
+    function createMaelstromTools_Basescanner() {
+
+      qx.Class.define("Addons.BaseScannerGUI", {
+        type : "singleton",
+        extend : qx.ui.window.Window,
+        construct : function () {
+          try {
+            this.base(arguments);
+            console.info("Addons.BaseScannerGUI " + window.__msbs_version);
+            this.T = Addons.Language.getInstance();
+            this.setWidth(820);
+            this.setHeight(400);
+            this.setContentPadding(10);
+            this.setShowMinimize(true);
+            this.setShowMaximize(true);
+            this.setShowClose(true);
+            this.setResizable(true);
+            this.setAllowMaximize(true);
+            this.setAllowMinimize(true);
+            this.setAllowClose(true);
+            this.setShowStatusbar(false);
+            this.setDecorator(null);
+            this.setPadding(5);
+            this.setLayout(new qx.ui.layout.VBox(3));
+
+            this.FI();
+            this.FH();
+            this.FD();
+            if (this.ZE == null) {
+              this.ZE = [];
+            }
+            this.setPadding(0);
+            this.removeAll();
+
+            this.add(this.ZF);
+            this.add(this.ZN);
+            this.add(this.ZP);
+            this.ZL.setData(this.ZE);							
+
+          } catch (e) {
+            console.debug("Addons.BaseScannerGUI.construct: ", e);
+          }
+        },
+        members : {
+          // pictures
+          
+          T : null,
+          ZA : 0,
+          ZB : null,
+          ZC : null,
+          ZD : null,
+          ZE : null,
+          ZF : null,
+          ZG : null,
+          ZH : false,
+          ZI : true,
+          ZJ : null,
+          ZK : null,
+          ZL : null,
+          ZM : null,
+          ZN : null,
+          ZO : null,
+          ZP : null,
+          ZQ : null,
+          ZR : [],
+          ZT : true,
+          ZU : null,
+          ZV : null,
+          ZX : null,
+          ZY : null,
+          ZZ : [],
+          ZS : {},
+          YZ : null,
+                    YY : null,
+                    crysCounter : null,
+                    tibCounter : null,
+          
+          openWindow : function (title) {
+            try {
+              this.setCaption(title);
+              if (this.isVisible()) {
+                this.close();
+              } else {
+                MT_Cache.updateCityCache();
+                MT_Cache = window.MaelstromTools.Cache.getInstance();
+                var cname;								
+                this.ZC.removeAll();
+                for (cname in MT_Cache.Cities) {
+                  var item = new qx.ui.form.ListItem(cname, null, MT_Cache.Cities[cname].Object);
+                  this.ZC.add(item);
+                  if (Addons.LocalStorage.getserver("Basescanner_LastCityID") == MT_Cache.Cities[cname].Object.get_Id()) {
+                    this.ZC.setSelection([item]);
+                  }
+                }							
+                this.open();
+                this.moveTo(100, 100);
+              }
+            } catch (e) {
+              console.log("MaelstromTools.DefaultObject.openWindow: ", e);
+            }
+          },
+          FI : function () {
+            try {
+              this.ZL = new qx.ui.table.model.Simple();
+              this.ZL.setColumns(["ID", "LoadState", this.T.get("City"), this.T.get("Location"), this.T.get("Level"), this.T.get("Tiberium"), this.T.get("Crystal"), this.T.get("Dollar"), this.T.get("Research"), "Crystalfields", "Tiberiumfields", this.T.get("Building state"), this.T.get("Defense state"), this.T.get("CP"), "Def.HP/Off.HP", "Sum Tib+Cry+Cre", "(Tib+Cry+Cre)/CP", "CY", "DF", this.T.get("base set up at"), "6+5+4+3t Tib", "6+5+4+3t Crys", "6+5+4+3t Mixed"]);
+              this.YY = ClientLib.Data.MainData.GetInstance().get_Player();
+              this.ZN = new qx.ui.table.Table(this.ZL);
+              this.ZN.setColumnVisibilityButtonVisible(false);
+              this.ZN.setColumnWidth(0, 0);
+              this.ZN.setColumnWidth(1, 0);
+              this.ZN.setColumnWidth(2, Addons.LocalStorage.getserver("Basescanner_ColWidth_2", 120));
+              this.ZN.setColumnWidth(3, Addons.LocalStorage.getserver("Basescanner_ColWidth_3", 60));
+              this.ZN.setColumnWidth(4, Addons.LocalStorage.getserver("Basescanner_ColWidth_4", 50));
+              this.ZN.setColumnWidth(5, Addons.LocalStorage.getserver("Basescanner_ColWidth_5", 60));
+              this.ZN.setColumnWidth(6, Addons.LocalStorage.getserver("Basescanner_ColWidth_6", 60));
+              this.ZN.setColumnWidth(7, Addons.LocalStorage.getserver("Basescanner_ColWidth_7", 60));
+              this.ZN.setColumnWidth(8, Addons.LocalStorage.getserver("Basescanner_ColWidth_8", 60));
+              this.ZN.setColumnWidth(9, Addons.LocalStorage.getserver("Basescanner_ColWidth_9", 30));
+              this.ZN.setColumnWidth(10, Addons.LocalStorage.getserver("Basescanner_ColWidth_10", 30));
+              this.ZN.setColumnWidth(11, Addons.LocalStorage.getserver("Basescanner_ColWidth_11", 50));
+              this.ZN.setColumnWidth(12, Addons.LocalStorage.getserver("Basescanner_ColWidth_12", 50));
+              this.ZN.setColumnWidth(13, Addons.LocalStorage.getserver("Basescanner_ColWidth_13", 30));
+              this.ZN.setColumnWidth(14, Addons.LocalStorage.getserver("Basescanner_ColWidth_14", 60));
+              this.ZN.setColumnWidth(15, Addons.LocalStorage.getserver("Basescanner_ColWidth_15", 60));
+              this.ZN.setColumnWidth(16, Addons.LocalStorage.getserver("Basescanner_ColWidth_16", 60));
+              this.ZN.setColumnWidth(17, Addons.LocalStorage.getserver("Basescanner_ColWidth_17", 50));
+              this.ZN.setColumnWidth(18, Addons.LocalStorage.getserver("Basescanner_ColWidth_18", 50));
+              this.ZN.setColumnWidth(19, Addons.LocalStorage.getserver("Basescanner_ColWidth_19", 40));
+              this.ZN.setColumnWidth(20, Addons.LocalStorage.getserver("Basescanner_ColWidth_20", 50));
+              this.ZN.setColumnWidth(21, Addons.LocalStorage.getserver("Basescanner_ColWidth_21", 50));
+              this.ZN.setColumnWidth(22, Addons.LocalStorage.getserver("Basescanner_ColWidth_22", 50));
+              var c = 0;
+              var tcm = this.ZN.getTableColumnModel();
+              for (c = 0; c < this.ZL.getColumnCount(); c++) {
+                if (c == 0 || c == 1 || c == 11 || c == 12) {
+                  tcm.setColumnVisible(c, Addons.LocalStorage.getserver("Basescanner_Column_" + c, false));
+                } else {
+                  tcm.setColumnVisible(c, Addons.LocalStorage.getserver("Basescanner_Column_" + c, true));
+                }
+              }
+              tcm.setColumnVisible(1, false);
+              tcm.setHeaderCellRenderer(9, new qx.ui.table.headerrenderer.Icon(MT_Base.images[MaelstromTools.Statics.Crystal]), "Crystalfields");
+              tcm.setHeaderCellRenderer(10, new qx.ui.table.headerrenderer.Icon(MT_Base.images[MaelstromTools.Statics.Tiberium], "Tiberiumfields"));
+              tcm.setDataCellRenderer(5, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
+              tcm.setDataCellRenderer(6, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
+              tcm.setDataCellRenderer(7, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
+              tcm.setDataCellRenderer(8, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
+              tcm.setDataCellRenderer(15, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
+              tcm.setDataCellRenderer(16, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
+              tcm.setDataCellRenderer(19, new qx.ui.table.cellrenderer.Boolean());
+              
+              if (PerforceChangelist >= 436669) { 
+                                // 15.3 patch
+                var eventType = "cellDbltap";
+                            } 
+                            else { 
+                                //old
+                var eventType = "cellDblclick";
+              }
+        
+              this.ZN.addListener(eventType, function (e) {
+                Addons.BaseScannerGUI.getInstance().FB(e);
+              }, this);
+
+              tcm.addListener("widthChanged", function (e) {
+                //console.log(e, e.getData());
+                var col = e.getData().col;
+                var width = e.getData().newWidth;
+                Addons.LocalStorage.setserver("Basescanner_ColWidth_" + col, width);
+              }, tcm);
+
+            } catch (e) {
+              console.debug("Addons.BaseScannerGUI.FI: ", e);
+            }
+          },
+          FB : function (e) {
+            try {
+              console.log("e",e.getRow(),this.ZE);
+              var cityId = this.ZE[e.getRow()][0];
+              var posData = this.ZE[e.getRow()][3];
+              /* center screen */
+              if (posData != null && posData.split(':').length == 2) {
+                var posX = parseInt(posData.split(':')[0]);
+                var posY = parseInt(posData.split(':')[1]);
+                ClientLib.Vis.VisMain.GetInstance().CenterGridPosition(posX, posY);
+              }
+              /* and highlight base */
+              if (cityId && !(this.ZK[4].getValue())) {
+                //ClientLib.Data.MainData.GetInstance().get_Cities().set_CurrentCityId(cityId);
+                //webfrontend.gui.UtilView.openCityInMainWindow(cityId);
+                //webfrontend.gui.UtilView.openVisModeInMainWindow(1, cityId, false);
+                var bk = qx.core.Init.getApplication();
+                bk.getBackgroundArea().closeCityInfo();
+                bk.getPlayArea().setView(ClientLib.Data.PlayerAreaViewMode.pavmCombatSetupDefense, cityId, 0, 0);
+              }
+
+              var q = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
+              if (q != null) 
+                q.get_CityArmyFormationsManager().set_CurrentTargetBaseId(cityId);
+
+            } catch (ex) {
+              console.debug("Addons.BaseScannerGUI FB error: ", ex);
+            }
+          },
+          FN : function (e) {
+            this.ZG.setLabel(this.T.get("Scan"));
+            this.ZH = false;
+          },
+          CBChanged : function (e) {
+            this.ZH = false;
+          },
+          FA : function (oValue) {
+            var f = new qx.util.format.NumberFormat();
+            f.setGroupingUsed(true);
+            f.setMaximumFractionDigits(3);
+            if (!isNaN(oValue)) {
+              if (Math.abs(oValue) < 100000)
+                oValue = f.format(Math.floor(oValue));
+              else if (Math.abs(oValue) < 1000000)
+                oValue = f.format(Math.floor(oValue / 100) / 10) + "k";
+              else if (Math.abs(oValue) < 10000000)
+                oValue = f.format(Math.floor(oValue / 1000) / 1000) + "M";
+              else if (Math.abs(oValue) < 100000000)
+                oValue = f.format(Math.floor(oValue / 10000) / 100) + "M";
+              else if (Math.abs(oValue) < 1000000000)
+                oValue = f.format(Math.floor(oValue / 100000) / 10) + "M";
+              else if (Math.abs(oValue) < 10000000000)
+                oValue = f.format(Math.floor(oValue / 1000000) / 1000) + "G";
+              else if (Math.abs(oValue) < 100000000000)
+                oValue = f.format(Math.floor(oValue / 10000000) / 100) + "G";
+              else if (Math.abs(oValue) < 1000000000000)
+                oValue = f.format(Math.floor(oValue / 100000000) / 10) + "G";
+              else if (Math.abs(oValue) < 10000000000000)
+                oValue = f.format(Math.floor(oValue / 1000000000) / 1000) + "T";
+              else if (Math.abs(oValue) < 100000000000000)
+                oValue = f.format(Math.floor(oValue / 10000000000) / 100) + "T";
+              else if (Math.abs(oValue) < 1000000000000000)
+                oValue = f.format(Math.floor(oValue / 100000000000) / 10) + "T";
+              else if (Math.abs(oValue) >= 1000000000000000)
+                oValue = f.format(Math.floor(oValue / 1000000000000)) + "T";
+            };
+            return oValue.toString();
+          },
+          // updateCache : function () {
+          // try {}
+          // catch (e) {
+          // console.debug("Addons.BaseScannerGUI.updateCache: ", e);
+          // }
+          // },
+          // setWidgetLabels : function () {
+          // try {
+          // if (!this.ZL) {
+          // this.FC();
+          // }
+          // this.ZL.setData(this.ZE);
+          // } catch (e) {
+          // console.debug("Addons.BaseScannerGUI.setWidgetLabels: ", e);
+          // }
+          // },
+          FH : function () {
+            try {
+              var oBox = new qx.ui.layout.Flow();
+              var oOptions = new qx.ui.container.Composite(oBox);
+              this.ZC = new qx.ui.form.SelectBox();
+              this.ZC.setHeight(25);
+              this.ZC.setMargin(5);
+              MT_Cache.updateCityCache();
+              MT_Cache = window.MaelstromTools.Cache.getInstance();
+              var cname;
+              for (cname in MT_Cache.Cities) {
+                var item = new qx.ui.form.ListItem(cname, null, MT_Cache.Cities[cname].Object);
+                this.ZC.add(item);
+                if (Addons.LocalStorage.getserver("Basescanner_LastCityID") == MT_Cache.Cities[cname].Object.get_Id()) {
+                  this.ZC.setSelection([item]);
+                }
+              }
+              this.ZC.addListener("changeSelection", function (e) {								
+                this.FP(0, 1, 200);
+                this.ZH = false;
+                this.ZG.setLabel(this.T.get("Scan"));
+              }, this);
+              oOptions.add(this.ZC);
+
+              var l = new qx.ui.basic.Label().set({
+                  value : this.T.get("CP Limit"),
+                  textColor : "white",
+                  margin : 5
+                });
+              oOptions.add(l);
+
+              this.ZQ = new qx.ui.form.SelectBox();
+              this.ZQ.setWidth(50);
+              this.ZQ.setHeight(25);
+              this.ZQ.setMargin(5);
+              var limiter = Addons.LocalStorage.getserver("Basescanner_Cplimiter", 40);
+              for (var m = 11; m < 42; m += 1) {
+                item = new qx.ui.form.ListItem("" + m, null, m);
+                this.ZQ.add(item);
+                if (limiter == m) {
+                  this.ZQ.setSelection([item]);
+                }
+              }
+              this.ZQ.addListener("changeSelection", function (e) {
+                this.ZE = [];
+                this.FP(0, 1, 200);
+                this.ZH = false;
+                this.ZG.setLabel(this.T.get("Scan"));
+              }, this);
+              oOptions.add(this.ZQ);
+
+              var la = new qx.ui.basic.Label().set({
+                  value : this.T.get("min Level"),
+                  textColor : "white",
+                  margin : 5
+                });
+                            oOptions.add(la);
+                            
+              var minlevel = Addons.LocalStorage.getserver("Basescanner_minLevel", "1");
+              this.ZY = new qx.ui.form.TextField(minlevel).set({
+                  width : 50
+                });
+              oOptions.add(this.ZY);
+
+              this.ZK = [];
+              this.ZK[0] = new qx.ui.form.CheckBox(this.T.get("Player"));
+              this.ZK[0].setMargin(5);
+              this.ZK[0].setTextColor("white");
+              this.ZK[0].setValue(Addons.LocalStorage.getserver("Basescanner_Show0", false));
+              this.ZK[0].addListener("changeValue", function (e) {
+                this.ZE = [];
+                this.FP(0, 1, 200);
+                this.ZH = false;
+                this.ZG.setLabel(this.T.get("Scan"));
+              }, this);
+                            oOptions.add(this.ZK[0]);
+                            
+              this.ZK[1] = new qx.ui.form.CheckBox(this.T.get("Bases"));
+              this.ZK[1].setMargin(5);
+              this.ZK[1].setTextColor("white");
+              this.ZK[1].setValue(Addons.LocalStorage.getserver("Basescanner_Show1", false));
+              this.ZK[1].addListener("changeValue", function (e) {
+                this.ZE = [];
+                this.FP(0, 1, 200);
+                this.ZH = false;
+                this.ZG.setLabel(this.T.get("Scan"));
+              }, this);
+              oOptions.add(this.ZK[1]);
+                            
+                            this.ZK[2] = new qx.ui.form.CheckBox(this.T.get("Outpost"));
+              this.ZK[2].setMargin(5);
+              this.ZK[2].setTextColor("white");
+              this.ZK[2].setValue(Addons.LocalStorage.getserver("Basescanner_Show2", true));
+              this.ZK[2].addListener("changeValue", function (e) {
+                this.ZE = [];
+                this.FP(0, 1, 200);
+                this.ZH = false;
+                this.ZG.setLabel(this.T.get("Scan"));
+              }, this);
+              oOptions.add(this.ZK[2]);
+                            
+                            this.ZK[3] = new qx.ui.form.CheckBox(this.T.get("Camp"));
+              this.ZK[3].setMargin(5);
+              this.ZK[3].setTextColor("white");
+              this.ZK[3].setValue(Addons.LocalStorage.getserver("Basescanner_Show3", true));
+              this.ZK[3].addListener("changeValue", function (e) {
+                this.ZE = [];
+                this.FP(0, 1, 200);
+                this.ZH = false;
+                this.ZG.setLabel(this.T.get("Scan"));
+              }, this);
+              oOptions.add(this.ZK[3], {
+                lineBreak : true
+              });
+
+              this.ZG = new qx.ui.form.Button(this.T.get("Scan")).set({
+                  width : 100,
+                  minWidth : 100,
+                  maxWidth : 100,
+                  height : 25,
+                  margin : 5
+                });
+              this.ZG.addListener("execute", function () {
+                      this.FE();
+                  }, this);
+              oOptions.add(this.ZG);
+
+              var border = new qx.ui.decoration.Decorator(2, "solid", "blue");
+              this.ZV = new qx.ui.container.Composite(new qx.ui.layout.Basic()).set({
+                  decorator : border,
+                  backgroundColor : "red",
+                  allowGrowX : false,
+                  height : 20,
+                  width : 200
+                });
+              this.ZU = new qx.ui.core.Widget().set({
+                  decorator : null,
+                  backgroundColor : "green",
+                  width : 0
+                });
+              this.ZV.add(this.ZU);
+              this.ZX = new qx.ui.basic.Label("").set({
+                  decorator : null,
+                  textAlign : "center",
+                  width : 200
+                });
+              this.ZV.add(this.ZX, {
+                                    left : 0,
+                                    top : -3
+                                });
+              oOptions.add(this.ZV);
+
+              this.YZ = new qx.ui.form.Button(this.T.get("clear Cache")).set({
+                  minWidth : 100,
+                  height : 25,
+                  margin : 5
+                });
+              this.YZ.addListener("execute", function () {
+                    this.ZZ = [];
+                  }, this);
+              oOptions.add(this.YZ);
+
+              this.ZK[4] = new qx.ui.form.CheckBox(this.T.get("Only centre on World"));
+              this.ZK[4].setMargin(5);
+              this.ZK[4].setTextColor("white");
+              oOptions.add(this.ZK[4], {
+                lineBreak : true
+              });
+
+              this.ZJ = new qx.ui.form.SelectBox();
+              this.ZJ.setWidth(150);
+              this.ZJ.setHeight(25);
+              this.ZJ.setMargin(5);
+              var item = new qx.ui.form.ListItem(this.T.get("All Layouts"), null, 0);
+              this.ZJ.add(item);
+              var item = new qx.ui.form.ListItem("7 " + this.T.get(MaelstromTools.Statics.Tiberium) + " 5 " + this.T.get(MaelstromTools.Statics.Crystal), null, 7);
+              this.ZJ.add(item);
+              item = new qx.ui.form.ListItem("6 " + this.T.get(MaelstromTools.Statics.Tiberium) + " 6 " + this.T.get(MaelstromTools.Statics.Crystal), null, 6);
+              this.ZJ.add(item);
+              item = new qx.ui.form.ListItem("5 " + this.T.get(MaelstromTools.Statics.Tiberium) + " 7 " + this.T.get(MaelstromTools.Statics.Crystal), null, 5);
+              this.ZJ.add(item);
+              oOptions.add(this.ZJ);
+              this.ZD = new qx.ui.form.Button(this.T.get("Get Layouts")).set({
+                  width : 120,
+                  minWidth : 120,
+                  maxWidth : 120,
+                  height : 25,
+                  margin : 5
+                });
+              this.ZD.addListener("execute", function () {
+                var layout = window.Addons.BaseScannerLayout.getInstance();
+                layout.openWindow(this.T.get("BaseScanner Layout"));
+              }, this);
+              this.ZD.setEnabled(false);
+              oOptions.add(this.ZD);
+
+              this.ZB = new qx.ui.container.Composite();
+              this.ZB.setLayout(new qx.ui.layout.Flow());
+              this.ZB.setWidth(750);
+              //oOptions.add(this.ZB, {flex:1});
+
+              var J = webfrontend.gui.layout.Loader.getInstance();
+              //var L = J.getLayout("playerbar", this);
+              //this._ZZ = J.getElement(L, "objid", 'lblplayer');
+
+              //this.tableSettings = new qx.ui.groupbox.GroupBox("Visable Columns");
+              //box.add(this.tableSettings, {flex:1});
+              var k = 2;
+              for (k = 2; k < this.ZL.getColumnCount(); k++) {
+                var index = k - 2;
+                this.ZR[index] = new qx.ui.form.CheckBox(this.ZL.getColumnName(k));
+                this.ZR[index].setValue(this.ZN.getTableColumnModel().isColumnVisible(k));
+                this.ZR[index].setTextColor("white");
+                this.ZR[index].index = k;
+                this.ZR[index].table = this.ZN;
+                this.ZR[index].addListener("changeValue", function (e) {
+                  //console.log("click", e, e.getData(), this.index);
+                  var tcm = this.table.getTableColumnModel();
+                  tcm.setColumnVisible(this.index, e.getData());
+                  Addons.LocalStorage.setserver("Basescanner_Column_" + this.index, e.getData());
+                });
+                this.ZB.add(this.ZR[index]);
+                //this.tableSettings.add( this.ZR[index] );
+              }
+
+              this.ZO = new qx.ui.form.Button("+").set({
+                  margin : 5
+                });
+              this.ZO.addListener("execute", function () {
+                if (this.ZI) {
+                  oOptions.addAfter(this.ZB, this.ZO);
+                  this.ZO.setLabel("-");
+                                } 
+                                else {
+                  oOptions.remove(this.ZB);
+                  this.ZO.setLabel("+");
+                }
+                this.ZI = !this.ZI;
+              }, this);
+              this.ZO.setAlignX("right");
+              oOptions.add(this.ZO, {
+                lineBreak : true
+              });
+
+              this.ZF = oOptions;
+
+            } catch (e) {
+              console.debug("Addons.BaseScannerGUI.createOptions: ", e);
+            }
+          },
+          FD : function () {
+            //0.7
+            //var n = ClientLib.Data.MainData.GetInstance().get_Cities();
+            //var i = n.get_CurrentOwnCity();
+            var st = '<a href="https://sites.google.com/site/blindmanxdonate" target="_blank">Support Development of BlinDManX Addons</a>';
+            var l = new qx.ui.basic.Label().set({
+                value : st,
+                rich : true,
+                width : 800
+              });
+            this.ZP = l;
+          },
+          FE : function () {
+            var selectedBase = this.ZC.getSelection()[0].getModel();
+            ClientLib.Vis.VisMain.GetInstance().CenterGridPosition(selectedBase.get_PosX(), selectedBase.get_PosY()); //Load data of region
+            ClientLib.Vis.VisMain.GetInstance().Update();
+            ClientLib.Vis.VisMain.GetInstance().ViewUpdate();
+            ClientLib.Data.MainData.GetInstance().get_Cities().set_CurrentCityId(selectedBase.get_Id());
+
+            if (this.ZT) {
+              var obj = ClientLib.Data.WorldSector.WorldObjectCity.prototype;
+              // var fa = foundfnkstring(obj['$ctor'], /=0;this\.(.{6})=g>>7&255;.*d\+=f;this\.(.{6})=\(/, "ClientLib.Data.WorldSector.WorldObjectCity", 2);
+              var fa = foundfnkstring(obj['$ctor'], /this\.(.{6})=\(?\(?g>>8\)?\&.*d\+=f;this\.(.{6})=\(/, "ClientLib.Data.WorldSector.WorldObjectCity", 2);
+              if (fa != null && fa[1].length == 6) {
+                obj.getLevel = function () {
+                  return this[fa[1]];
+                };
+                            } 
+                            else {
+                console.error("Error - ClientLib.Data.WorldSector.WorldObjectCity.Level undefined");
+              }
+              if (fa != null && fa[2].length == 6) {
+                obj.getID = function () {
+                  return this[fa[2]];
+                };
+                            } 
+                            else {
+                console.error("Error - ClientLib.Data.WorldSector.WorldObjectCity.ID undefined");
+              }
+
+              obj = ClientLib.Data.WorldSector.WorldObjectNPCBase.prototype;
+              //var fb = foundfnkstring(obj['$ctor'], /100;this\.(.{6})=Math.floor.*d\+=f;this\.(.{6})=\(/, "ClientLib.Data.WorldSector.WorldObjectNPCBase", 2);
+              var fb = foundfnkstring(obj['$ctor'], /100\){0,1};this\.(.{6})=Math.floor.*d\+=f;this\.(.{6})=\(/, "ClientLib.Data.WorldSector.WorldObjectNPCBase", 2);
+              if (fb != null && fb[1].length == 6) {
+                obj.getLevel = function () {
+                  return this[fb[1]];
+                };
+                            } 
+                            else {
+                console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCBase.Level undefined");
+              }
+              if (fb != null && fb[2].length == 6) {
+                obj.getID = function () {
+                  return this[fb[2]];
+                };
+                            } 
+                            else {
+                console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCBase.ID undefined");
+              }
+
+              obj = ClientLib.Data.WorldSector.WorldObjectNPCCamp.prototype;
+              //var fc = foundfnkstring(obj['$ctor'], /100;this\.(.{6})=Math.floor.*=-1;\}this\.(.{6})=\(/, "ClientLib.Data.WorldSector.WorldObjectNPCCamp", 2);
+              var fc = foundfnkstring(obj['$ctor'], /100\){0,1};this\.(.{6})=Math.floor.*this\.(.{6})=\(*g\>\>(22|0x16)\)*\&.*=-1;\}this\.(.{6})=\(/, "ClientLib.Data.WorldSector.WorldObjectNPCCamp", 4);
+              if (fc != null && fc[1].length == 6) {
+                obj.getLevel = function () {
+                  return this[fc[1]];
+                };
+                            } 
+                            else {
+                console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCCamp.Level undefined");
+              }
+              if (fc != null && fc[2].length == 6) {
+                obj.getCampType = function () {
+                  return this[fc[2]];
+                };
+                            } 
+                            else {
+                console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCCamp.CampType undefined");
+              }
+
+              if (fc != null && fc[4].length == 6) {
+                obj.getID = function () {
+                  return this[fc[4]];
+                };
+                            } 
+                            else {
+                console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCCamp.ID undefined");
+              }
+              this.ZT = false;
+            }
+
+            //Firstscan
+            if (this.ZE == null) {
+              this.ZH = false;
+              this.ZG.setLabel("Pause");
+              this.ZD.setEnabled(false);
+              window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FJ()", 1000);
+              return;
+            }
+            //After Pause
+            var c = 0;
+            for (i = 0; i < this.ZE.length; i++) {
+              if (this.ZE[i][1] == -1) {
+                c++;
+              }
+            }
+
+            if (!this.ZH) {
+              this.ZG.setLabel("Pause");
+              this.ZD.setEnabled(false);
+              if (c > 0) {
+                this.ZH = true;
+                window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FG()", 1000);
+                return;
+              } 
+              else {
+                this.ZH = false;
+                window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FJ()", 1000);
+              }
+            }  
+            else {
+              this.ZH = false;
+              this.ZG.setLabel(this.T.get("Scan"));
+            }
+
+          },
+          FP : function (value, max, maxwidth) {
+            if (this.ZU != null && this.ZX != null) {
+              this.ZU.setWidth(parseInt(value / max * maxwidth, 10));
+              this.ZX.setValue(value + "/" + max);
+            }
+          },
+          FJ : function () {
+            try {
+              this.ZM = {};
+                            this.crysCounter = {};
+              this.tibCounter = {};
+              this.ZE = [];
+              var selectedBase = this.ZC.getSelection()[0].getModel();
+              Addons.LocalStorage.setserver("Basescanner_LastCityID", selectedBase.get_Id());
+              var ZQ = this.ZQ.getSelection()[0].getModel();
+              Addons.LocalStorage.setserver("Basescanner_Cplimiter", ZQ);
+              Addons.LocalStorage.setserver("Basescanner_minLevel", this.ZY.getValue());
+
+              var c1 = this.ZK[0].getValue();
+              var c2 = this.ZK[1].getValue();
+              var c3 = this.ZK[2].getValue();
+              var c4 = this.ZK[3].getValue();
+              var c5 = parseInt(this.ZY.getValue(), 10);
+              //console.log("Select", c1, c2, c3,c4,c5);
+              Addons.LocalStorage.setserver("Basescanner_Show0", c1);
+              Addons.LocalStorage.setserver("Basescanner_Show1", c2);
+              Addons.LocalStorage.setserver("Basescanner_Show2", c3);
+              Addons.LocalStorage.setserver("Basescanner_Show3", c4);
+              var posX = selectedBase.get_PosX();
+              var posY = selectedBase.get_PosY();
+              var scanX = 0;
+              var scanY = 0;
+              var world = ClientLib.Data.MainData.GetInstance().get_World();
+              // console.info("Scanning from: " + selectedBase.get_Name());
+
+              // world.CheckAttackBase (System.Int32 targetX ,System.Int32 targetY) -> ClientLib.Data.EAttackBaseResult
+              // world.CheckAttackBaseRegion (System.Int32 targetX ,System.Int32 targetY) -> ClientLib.Data.EAttackBaseResult
+              var t1 = true;
+              var t2 = true;
+              var t3 = true;
+
+              var maxAttackDistance = ClientLib.Data.MainData.GetInstance().get_Server().get_MaxAttackDistance();
+              for (scanY = posY - Math.floor(maxAttackDistance + 1); scanY <= posY + Math.floor(maxAttackDistance + 1); scanY++) {
+                for (scanX = posX - Math.floor(maxAttackDistance + 1); scanX <= posX + Math.floor(maxAttackDistance + 1); scanX++) {
+                  var distX = Math.abs(posX - scanX);
+                  var distY = Math.abs(posY - scanY);
+                  var distance = Math.sqrt((distX * distX) + (distY * distY));
+                  if (distance <= maxAttackDistance) {
+                    var object = world.GetObjectFromPosition(scanX, scanY);
+                    var loot = {};
+                    if (object) {
+                      //console.log(object);
+                                            
+                      // if (object.Type == 1 && t1) {
+                      // 	//console.log("object typ 1");
+                      // 	//objfnkstrON(object);
+                      // 	//t1 = !t1;
+                      // }
+                      // if (object.Type == 2 && t2) {
+                      // 	//console.log("object typ 2");
+                      // 	//objfnkstrON(object);
+                      // 	//t2 = !t2;
+                      // }
+
+                      // if (object.Type == 3 && t3) {
+                      // 	//console.log("object typ 3");
+                      // 	//objfnkstrON(object);
+                      // 	//t3 = !t3;
+                      // }
+
+                      // if (object.Type == 3) {
+                      // 	if (c5 <= parseInt(object.getLevel(), 10)) {
+                      // 		//console.log(object);
+                      // 	}
+                      // }
+
+                      //if(object.ConditionBuildings>0){
+                      var needcp = selectedBase.CalculateAttackCommandPointCostToCoord(scanX, scanY);
+                      if (needcp <= ZQ && typeof object.getLevel == 'function') {
+                        if (c5 <= parseInt(object.getLevel(), 10)) {
+                          // 0:ID , 1:Scanned, 2:Name, 3:Location, 4:Level, 5:Tib, 6:Kristal, 7:Credits, 8:Forschung, 9:Kristalfelder, 10:Tiberiumfelder,
+                          // 11:ConditionBuildings,12:ConditionDefense,13: CP pro Angriff , 14: defhp/offhp , 15:sum tib,krist,credits, 16: sum/cp
+                          var d = this.FL(object.getID(), 0);
+                          var e = this.FL(object.getID(), 1);
+                          if (e != null) {
+                            this.ZM[object.getID()] = e;
+                          }
+
+                          if (object.Type == 1 && c1) { //User
+                            //console.log("object ID LEVEL", object.getID() ,object.getLevel() );
+                            if (d != null) {
+                              this.ZE.push(d);
+                                                        } 
+                                                        else {
+                              this.ZE.push([object.getID(),  - 1, this.T.get("Player"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0 ,0]);
+                            }
+                          }
+                          else if (object.Type == 2 && c2) { //basen
+                            //console.log("object ID LEVEL", object.getID() ,object.getLevel() );
+                            if (d != null) {
+                              this.ZE.push(d);
+                                                        } 
+                                                        else {
+                              this.ZE.push([object.getID(),  - 1, this.T.get("Bases"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0 ,0]);
+                            }
+                          }
+                          else if (object.Type == 3 && (c3 || c4)) { //Lager Vposten
+                                                        //debugger;
+                            //console.log("object ID LEVEL", object.getID() ,object.getLevel() );
+                            if (d != null) {
+                              if ((object.getCampType() == 2 || object.getCampType() == 1) && c4) {
+                                this.ZE.push(d);
+                              }
+                              else if ((object.getCampType() == 7) && c4) {
+                                this.ZE.push(d);
+                              }
+                              else if (object.getCampType() == 3 && c3) {
+                                this.ZE.push(d);
+                              }
+
+                                                        } 
+                                                        else {
+                              if ((object.getCampType() == 7 || object.getCampType() == 2 || object.getCampType() == 1) && c4) {
+                                this.ZE.push([object.getID(),  - 1, this.T.get("Camp"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0 ,0]);
+                              }
+                              else if ((object.getCampType() == 7) && c4) {
+                                this.ZE.push([object.getID(),  - 1, this.T.get("Infected Camp"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0 ,0]);
+                              }
+                              else if (object.getCampType() == 3 && c3) {
+                                this.ZE.push([object.getID(),  - 1, this.T.get("Outpost"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0 ,0]);
+                              }
+                            }
+                          }
+                        }
+                      }
+                      //}
+                    }
+                  }
+                }
+              }
+              this.ZH = true;
+              this.ZL.setData(this.ZE);
+              this.FP(0, this.ZE.length, 200);
+              this.ZL.sortByColumn(4, false); //Sort from High to Low. Sort by lvl is "4". Sort by Crist is "6".
+              if (this.YY.name != "DR01D")
+                window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FG()", 50);
+            } catch (ex) {
+              console.debug("Maelstrom_Basescanner FJ error: ", ex);
+            }
+          },
+          FG : function () {
+            try {
+              var retry = false;
+              var loops = 0;
+              var maxLoops = 10;
+              var i = 0;
+              var sleeptime = 150;
+              while (!retry) {
+                var ncity = null;
+                var selectedid = 0;
+                var id = 0;
+                if (this.ZE == null) {
+                  console.warn("data null: ");
+                  this.ZH = false;
+                  break;
+                }
+                for (i = 0; i < this.ZE.length; i++) {
+                  // 1= "LoadState"
+                  if (this.ZE[i][1] == -1) {
+                    break;
+                  }
+                }
+
+                if (i == this.ZE.length) {
+                  this.ZH = false;
+                }
+                this.FP(i, this.ZE.length, 200); //Progressbar
+                if (this.ZE[i] == null) {
+                  console.warn("data[i] null: ");
+                  this.ZH = false;
+                  this.ZG.setLabel(this.T.get("Scan"));
+                  this.ZD.setEnabled(true);
+                  break;
+                }
+                posData = this.ZE[i][3];
+                /* make sure coordinates are well-formed enough */
+                if (posData != null && posData.split(':').length == 2) {
+                  posX = parseInt(posData.split(':')[0]);
+                  posY = parseInt(posData.split(':')[1]);
+                  /* check if there is any base */
+                  var playerbase = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
+                  var world = ClientLib.Data.MainData.GetInstance().get_World();
+                  var foundbase = world.CheckFoundBase(posX, posY, playerbase.get_PlayerId(), playerbase.get_AllianceId());
+                  //console.log("foundbase",foundbase);
+                  this.ZE[i][19] = (foundbase == 0) ? true : false;
+                  //var obj = ClientLib.Vis.VisMain.GetInstance().get_SelectedObject();
+                  //console.log("obj", obj);
+                  id = this.ZE[i][0];
+                  ClientLib.Data.MainData.GetInstance().get_Cities().set_CurrentCityId(id);
+                  ncity = ClientLib.Data.MainData.GetInstance().get_Cities().GetCity(id);
+                  //console.log("ncity", ncity);
+                  if (ncity != null) {
+                    if (!ncity.get_IsGhostMode()) {
+                      //if(ncity.get_Name() != null)
+                      //console.log("ncity.get_Name ", ncity.get_Name() , ncity.get_CityBuildingsData().get_Buildings());
+                      //var cityBuildings = ncity.get_CityBuildingsData();
+                      var cityUnits = ncity.get_CityUnitsData();
+                      if (cityUnits != null) { // cityUnits !=null können null sein
+                        //console.log("ncity.cityUnits", cityUnits );
+                        var selectedBase = this.ZC.getSelection()[0].getModel();
+                        var buildings = ncity.get_Buildings().d;
+                        var defenseUnits = cityUnits.get_DefenseUnits().d;
+                        var offensivUnits = selectedBase.get_CityUnitsData().get_OffenseUnits().d;
+                        //console.log(buildings,defenseUnits,offensivUnits);
+
+                        if (buildings != null) //defenseUnits !=null können null sein
+                        {
+                          var buildingLoot = getResourcesPart(buildings);
+                          var unitLoot = getResourcesPart(defenseUnits);
+
+                          //console.log("buildingLoot", buildingLoot);
+                          //console.log("unitLoot", unitLoot);
+                          this.ZE[i][2] = ncity.get_Name();
+                          this.ZE[i][5] = buildingLoot[ClientLib.Base.EResourceType.Tiberium] + unitLoot[ClientLib.Base.EResourceType.Tiberium];
+                          this.ZE[i][6] = buildingLoot[ClientLib.Base.EResourceType.Crystal] + unitLoot[ClientLib.Base.EResourceType.Crystal];
+                          this.ZE[i][7] = buildingLoot[ClientLib.Base.EResourceType.Gold] + unitLoot[ClientLib.Base.EResourceType.Gold];
+                          this.ZE[i][8] = buildingLoot[ClientLib.Base.EResourceType.ResearchPoints] + unitLoot[ClientLib.Base.EResourceType.ResearchPoints];
+                          //console.log(posX,posY,"GetBuildingsConditionInPercent", ncity.GetBuildingsConditionInPercent() );
+                          if (ncity.GetBuildingsConditionInPercent() != 0) {
+                            this.ZA = 0;
+                            if (this.ZE[i][5] != 0) {
+                              var c = 0;
+                              var t = 0;
+                              var m = 0;
+                              var k = 0;
+                              var l = 0;
+                              this.ZM[id] = new Array(9);
+                              this.crysCounter[id] = new Array(9);
+                              this.tibCounter[id] = new Array(9);
+                              for (m = 0; m < 9; m++) {
+                                this.ZM[id][m] = new Array(8);
+                                                                this.crysCounter[id][m] = new Array(9).join('0').split('').map(parseFloat);
+                                                                this.tibCounter[id][m] = new Array(9).join('0').split('').map(parseFloat);
+                              }
+                              for (k = 1; k < 8; k++) {
+                                for (l = 1; l < 7; l++) {
+                                  //console.log( ncity.GetResourceType(k,l) );
+                                  switch (ncity.GetResourceType(k, l)) {
+                                  case 1:
+                                    /* Crystal */
+                                    this.ZM[id][k][l] = 1;
+                                    this.crysCounter[id][k-1][l]++;
+                                    this.crysCounter[id][k-1][l-1]++;
+                                    this.crysCounter[id][k-1][l+1]++;
+                                                                            
+                                    this.crysCounter[id][k+1][l]++;
+                                    this.crysCounter[id][k+1][l-1]++;
+                                    this.crysCounter[id][k+1][l+1]++;
+                                                                            
+                                    this.crysCounter[id][k][l-1]++;
+                                    this.crysCounter[id][k][l+1]++;
+                                    c++;
+                                    break;
+                                  case 2:
+                                    /* Tiberium */
+                                    this.ZM[id][k][l] = 2;
+                                    this.tibCounter[id][k-1][l]++;
+                                    this.tibCounter[id][k-1][l-1]++;
+                                    this.tibCounter[id][k-1][l+1]++;
+                                                                            
+                                    this.tibCounter[id][k+1][l]++;
+                                    this.tibCounter[id][k+1][l-1]++;
+                                    this.tibCounter[id][k+1][l+1]++;
+                                                                            
+                                    this.tibCounter[id][k][l-1]++;
+                                    this.tibCounter[id][k][l+1]++;
+                                    t++;
+                                    break;
+                                  default:
+                                    //none
+                                    break;
+                                  }
+                                }
+                              }
+                                                            var tib_xtouch = new Array(6).join('0').split('').map(parseFloat);
+                                                            var crys_xtouch = new Array(6).join('0').split('').map(parseFloat);
+                                                            var mixed_xtouch = new Array(6).join('0').split('').map(parseFloat);
+                                                            for (k = 0; k < 9; k++) {
+                                for (l = 0; l < 8; l++) {
+                                                                    if (this.ZM[id][k][l] != 1 && this.ZM[id][k][l] != 2) {
+                                                                        if (this.tibCounter[id][k][l] > 0 && this.crysCounter[id][k][l] > 0 && (this.tibCounter[id][k][l] + this.crysCounter[id][k][l] >= 3)) {
+                                                                            mixed_xtouch[this.tibCounter[id][k][l] + this.crysCounter[id][k][l]-3]++;
+                                                                        }
+                                                                        else if (this.tibCounter[id][k][l] >= 3 ) {
+                                                                            tib_xtouch[this.tibCounter[id][k][l] -3]++;                                                                          
+                                                                        }
+                                                                        else if (this.crysCounter[id][k][l] >= 3 ) {
+                                                                            crys_xtouch[this.crysCounter[id][k][l] - 3]++;                                                                    
+                                                                        }
+                                                                    }
+                                }
+                              }
+                              //console.log( c,t );
+
+                              this.ZE[i][9] = c;
+                              this.ZE[i][10] = t;
+                              this.ZE[i][11] = ncity.GetBuildingsConditionInPercent();
+                              this.ZE[i][12] = ncity.GetDefenseConditionInPercent();
+                                                            
+                                                            if (tib_xtouch[2] > 0 || tib_xtouch[3] > 0) {
+                                                                this.ZE[i][20] = "!! " + tib_xtouch[3] + "+" +tib_xtouch[2] + "+" +tib_xtouch[1] + "+" +tib_xtouch[0] + " !!";
+                                                            }
+                                                            else {
+                                                                this.ZE[i][20] = (tib_xtouch[3] + "+" +tib_xtouch[2] + "+" +tib_xtouch[1] + "+" +tib_xtouch[0]).slice(-9);
+                                                            }
+                                                            if (crys_xtouch[2] > 0 || crys_xtouch[3] > 0) {
+                                                                this.ZE[i][21] = "!! " + crys_xtouch[3] + "+" +crys_xtouch[2] + "+" +crys_xtouch[1] + "+" +crys_xtouch[0]+ " !!";
+                                                            }
+                                                            else {
+                                                                this.ZE[i][21] = (crys_xtouch[3] + "+" +crys_xtouch[2] + "+" +crys_xtouch[1] + "+" +crys_xtouch[0]).slice(-9);
+                                                            }
+                                                            if (mixed_xtouch[2] > 0 || mixed_xtouch[3] > 0) {
+                                                                this.ZE[i][22] = "!! " + mixed_xtouch[3] + "+" +mixed_xtouch[2] + "+" +mixed_xtouch[1] + "+" +mixed_xtouch[0]+ " !!";
+                                                            }
+                                                            else {
+                                                                this.ZE[i][22] = (mixed_xtouch[3] + "+" +mixed_xtouch[2] + "+" +mixed_xtouch[1] + "+" +mixed_xtouch[0]).slice(-9);
+                                                            }
+
+                              try {
+                                var u = offensivUnits;
+                                //console.log("OffenseUnits",u);
+                                var offhp = 0;
+                                var defhp = 0;
+                                for (var g in u) {
+                                  offhp += u[g].get_Health();
+                                }
+
+                                u = defenseUnits;
+                                //console.log("DefUnits",u);
+                                for (var g in u) {
+                                  defhp += u[g].get_Health();
+                                }
+
+                                u = buildings;
+                                //console.log("DefUnits",u);
+                                for (var g in u) {
+                                  //var id=0;
+                                  //console.log("MdbUnitId",u[g].get_MdbUnitId());
+                                  var mid = u[g].get_MdbUnitId();
+                                  //DF
+                                  if (mid == 158 || mid == 131 || mid == 195) {
+                                    this.ZE[i][18] = 8 - u[g].get_CoordY();
+                                  }
+                                  //CY
+                                  if (mid == 112 || mid == 151 || mid == 177) {
+                                    this.ZE[i][17] = 8 - u[g].get_CoordY();
+                                  }
+                                }
+
+                                //console.log("HPs",offhp,defhp, (defhp/offhp) );
+                              } catch (x) {
+                                console.debug("HPRecord", x);
+                              }
+                              this.ZE[i][14] = (defhp / offhp);
+                              this.ZE[i][15] = this.ZE[i][5] + this.ZE[i][6] + this.ZE[i][7];
+                              this.ZE[i][16] = this.ZE[i][15] / this.ZE[i][13];
+                              this.ZE[i][1] = 0;
+                              retry = true;
+                              // console.info(ncity.get_Name(), " finish");
+                              this.ZA = 0;
+                              this.countlastidchecked = 0;
+                              //console.log(this.ZE[i],this.ZM[id],id);
+                              this.FK(this.ZE[i], this.ZM[id], id);
+                              //update table
+                              this.ZL.setData(this.ZE);
+                            }
+                          } else {
+                            if (this.ZA > 250) {
+                              // console.info(this.ZE[i][2], " on ", posX, posY, " removed (GetBuildingsConditionInPercent == 0)");
+                              this.ZE.splice(i, 1); //entfernt element aus array
+                              this.ZA = 0;
+                              this.countlastidchecked = 0;
+                              break;
+                            }
+                            this.ZA++;
+                          }
+                        }
+                      }
+                                        } 
+                                        else {
+                      // console.info(this.ZE[i][2], " on ", posX, posY, " removed (IsGhostMode)");
+                      this.ZE.splice(i, 1); //entfernt element aus array
+                      break;
+                    }
+                  }
+                }
+                loops++;
+                if (loops >= maxLoops) {
+                  retry = true;
+                  break;
+                }
+              }
+
+              //console.log("getResourcesByID end ", this.ZH, Addons.BaseScannerGUI.getInstance().isVisible());
+              if (this.lastid != i) {
+                this.lastid = i;
+                this.countlastidchecked = 0;
+                this.ZA = 0;
+                            } 
+                            else {
+                if (this.countlastidchecked > 16) {
+                  // console.info(this.ZE[i][2], " on ", posX, posY, " removed (found no data)");
+                  this.ZE.splice(i, 1); //entfernt element aus array
+                  this.countlastidchecked = 0;
+                                } 
+                                else if (this.countlastidchecked > 10) {
+                  sleeptime = 500;
+                                } 
+                                else if (this.countlastidchecked > 4) {
+                  sleeptime = 250;
+                }
+                this.countlastidchecked++;
+              }
+              //console.log("this.ZH", this.ZH);
+              if (this.ZH && Addons.BaseScannerGUI.getInstance().isVisible()) {
+                //console.log("loop");
+                window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FG()", sleeptime);
+              } else {
+                this.ZG.setLabel(this.T.get("Scan"));
+                this.ZH = false;
+              }
+            } catch (e) {
+              console.debug("MaelstromTools_Basescanner getResources", e);
+            }
+          },
+          FK : function (dataa, datab, id) {
+            this.ZZ.push(dataa);
+            this.ZS[id] = datab;
+          },
+          FL : function (id, t) {
+            if (t == 0) {
+              for (var i = 0; i < this.ZZ.length; i++) {
+                if (this.ZZ[i][0] == id) {
+                  return this.ZZ[i];
+                }
+              }
+                        } 
+                        else {
+              if (this.ZS[id]) {
+                return this.ZS[id];
+              }
+            }
+            return null;
+          }
+
+        }
+      });
+
+      qx.Class.define("Addons.BaseScannerLayout", {
+        type : "singleton",
+        extend : qx.ui.window.Window,
+        construct : function () {
+          try {
+            this.base(arguments);
+            console.info("Addons.BaseScannerLayout " + window.__msbs_version);
+            this.setWidth(820);
+            this.setHeight(400);
+            this.setContentPadding(10);
+            this.setShowMinimize(false);
+            this.setShowMaximize(true);
+            this.setShowClose(true);
+            this.setResizable(true);
+            this.setAllowMaximize(true);
+            this.setAllowMinimize(false);
+            this.setAllowClose(true);
+            this.setShowStatusbar(false);
+            this.setDecorator(null);
+            this.setPadding(10);
+            this.setLayout(new qx.ui.layout.Grow());
+
+            this.ZW = [];
+            this.removeAll();
+            this.ZZ = new qx.ui.container.Scroll();
+            this.ZY = new qx.ui.container.Composite(new qx.ui.layout.Flow());
+            this.add(this.ZZ, { flex : 3 });
+            this.ZZ.add(this.ZY);
+            //this.FO();
+          } catch (e) {
+            console.debug("Addons.BaseScannerLayout.construct: ", e);
+          }
+        },
+        members : {
+          ZW : null,
+          ZZ : null,
+          ZY : null,
+          ZX : null,
+          openWindow : function (title) {
+            try {
+              this.setCaption(title);
+              if (this.isVisible()) {
+                this.close();
+                            } 
+                            else {
+                this.open();
+                this.moveTo(100, 100);
+                this.FO();
+              }
+            } catch (e) {
+              console.log("Addons.BaseScannerLayout.openWindow: ", e);
+            }
+          },
+          FO : function () {
+            var ZM = window.Addons.BaseScannerGUI.getInstance().ZM;
+            var ZE = window.Addons.BaseScannerGUI.getInstance().ZE;
+            this.ZX = [];
+            var selectedtype = window.Addons.BaseScannerGUI.getInstance().ZJ.getSelection()[0].getModel();
+            //console.log("FO: " , ZM.length);
+            var rowDataLine = null;
+            if (ZE == null) {
+              console.info("ZE null: ");
+              return;
+            }
+            //console.log("FO: " , ZM);
+            this.ZW = [];
+            var id;
+            var i;
+            var x;
+            var y;
+            var a;
+            for (id in ZM) {
+              for (i = 0; i < ZE.length; i++) {
+                if (ZE[i][0] == id) {
+                  rowDataLine = ZE[i];
+                }
+              }
+
+              if (rowDataLine == null) {
+                continue;
+              }
+              //console.log("ST",selectedtype,rowDataLine[10]);
+              if (selectedtype > 4 && selectedtype < 8) {
+                if (selectedtype != rowDataLine[10]) {
+                  continue;
+                }
+                            }
+                            // else {
+              //	continue;
+              //}
+
+              posData = rowDataLine[3];
+              if (posData != null && posData.split(':').length == 2) {
+                posX = parseInt(posData.split(':')[0]);
+                posY = parseInt(posData.split(':')[1]);
+              }
+              var st = '<table border="2" cellspacing="0" cellpadding="0">';
+              var link = rowDataLine[2] + " - " + rowDataLine[3];
+              st = st + '<tr><td colspan="9"><font color="#FFF">' + link + '</font></td></tr>';
+              for (y = 0; y < 8; y++) {
+                st = st + "<tr>";
+                for (x = 0; x < 9; x++) {
+                  var img = "";
+                  var res = ZM[id][x][y];
+                  //console.log("Res ",res);
+                  switch (res == undefined ? 0 : res) {
+                  case 2:
+                    //console.log("Tiberium " , MT_Base.images[MaelstromTools.Statics.Tiberium] );
+                    img = '<img width="14" height="14" src="' + MT_Base.images[MaelstromTools.Statics.Tiberium] + '">';
+                    break;
+                  case 1:
+                    //console.log("Crystal ");
+                    img = '<img width="14" height="14" src="' + MT_Base.images[MaelstromTools.Statics.Crystal] + '">';
+                    break;
+                  default:
+                    img = '<img width="14" height="14" src="' + MT_Base.images["Emptypixels"] + '">';
+                    break;
+                  }
+                  st = st + "<td>" + img + "</td>";
+                }
+                st = st + "</tr>";
+              }
+              st = st + "</table>";
+              //console.log("setWidgetLabels ", st);
+              var l = new qx.ui.basic.Label().set({
+                  backgroundColor : "#303030",
+                  value : st,
+                  rich : true
+                });
+              l.cid = id;
+              this.ZX.push(id);
+              l.addListener("click", function (e) {
+                //console.log("clickid ", this.cid, );
+                //webfrontend.gui.UtilView.openCityInMainWindow(this.cid);
+                var bk = qx.core.Init.getApplication();
+                bk.getBackgroundArea().closeCityInfo();
+                bk.getPlayArea().setView(ClientLib.Data.PlayerAreaViewMode.pavmCombatSetupDefense, this.cid, 0, 0);
+                var q = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
+                if (q != null)
+                  q.get_CityArmyFormationsManager().set_CurrentTargetBaseId(this.cid);
+
+              });
+              l.setReturnValue = id;
+              this.ZW.push(l);
+            }
+            this.ZY.removeAll();
+            var b = 0;
+            var c = 0;
+            //console.log("this.ZW.length",this.ZW.length);
+            for (a = 0; a < this.ZW.length; a++) {
+              this.ZY.add(this.ZW[a], {
+                row : b,
+                column : c
+              });
+              c++;
+              if (c > 4) {
+                c = 0;
+                b++;
+              }
+            }
+          }
+        }
+      });
+
+      qx.Class.define("Addons.LocalStorage", {
+        type : "static",
+        extend : qx.core.Object,
+        statics : {
+          isSupported : function () {
+            return typeof(localStorage) !== "undefined";
+          },
+          isdefined : function (key) {
+            return (localStorage[key] !== "undefined" && localStorage[key] != null);
+          },
+          isdefineddata : function (data, key) {
+            return (data[key] !== "undefined" && data[key] != null);
+          },
+          setglobal : function (key, value) {
+            try {
+              if (Addons.LocalStorage.isSupported()) {
+                localStorage[key] = JSON.stringify(value);
+              }
+                        } 
+                        catch (e) {
+              console.debug("Addons.LocalStorage.setglobal: ", e);
+            }
+          },
+          getglobal : function (key, defaultValue) {
+            try {
+              if (Addons.LocalStorage.isSupported()) {
+                if (Addons.LocalStorage.isdefined(key)) {
+                  return JSON.parse(localStorage[key]);
+                }
+              }
+                        } 
+                        catch (e) {
+              console.log("Addons.LocalStorage.getglobal: ", e);
+            }
+            return defaultValue;
+          },
+          setserver : function (key, value) {
+            try {
+              if (Addons.LocalStorage.isSupported()) {
+                var sn = ClientLib.Data.MainData.GetInstance().get_Server().get_Name();
+                var data;
+                if (Addons.LocalStorage.isdefined(sn)) {
+                  try {
+                    data = JSON.parse(localStorage[sn]);
+                    if (!(typeof data === "object")) {
+                      data = {};
+                      console.debug("LocalStorage data from server not null, but not object");
+                    }
+                                    } 
+                                    catch (e) {
+                    console.debug("LocalStorage data from server not null, but parsererror", e);
+                    data = {};
+                  }
+                                } 
+                                else {
+                  data = {};
+                }
+                data[key] = value;
+                localStorage[sn] = JSON.stringify(data);
+              }
+                        } 
+                        catch (e) {
+              console.debug("Addons.LocalStorage.setserver: ", e);
+            }
+          },
+          getserver : function (key, defaultValue) {
+            try {
+              if (Addons.LocalStorage.isSupported()) {
+                var sn = ClientLib.Data.MainData.GetInstance().get_Server().get_Name();
+                if (Addons.LocalStorage.isdefined(sn)) {
+                  var data = JSON.parse(localStorage[sn]);
+                  if (Addons.LocalStorage.isdefineddata(data, key)) {
+                    return data[key];
+                  }
+                }
+              }
+                        } 
+                        catch (e) {
+              console.log("Addons.LocalStorage.getserver: ", e);
+            }
+            return defaultValue;
+          }
+        }
+      });
+      
+      if(typeof Addons.Language === 'undefined'){
+        qx.Class.define("Addons.Language", {
+          type : "singleton",
+          extend : qx.core.Object,
+          members : {
+            d : {},
+            debug : false,
+            addtranslateobj : function (o) {
+              if ( o.hasOwnProperty("main") ){
+                this.d[o.main.toString()] = o;								
+                if(this.debug){
+                  console.log("Translate Added ", o.main.toString() );
+                }
+                delete o.main;								
+                            } 
+                            else {
+                console.debug("Addons.Language.addtranslateobj main not define");
+              }
+            },
+            get : function (t) {
+              var locale = qx.locale.Manager.getInstance().getLocale();
+              var loc = locale.split("_")[0];
+              if ( this.d.hasOwnProperty(t) ){
+                if ( this.d[t].hasOwnProperty(loc) ){
+                  return this.d[t][loc];
+                }
+              }
+              if(this.debug){
+                console.debug("Addons.Language.get ", t, " not translate for locale ", loc);
+              }
+              return t;
+            }
+          }
+        });
+      }
+      
+      qx.Class.define("qx.ui.table.cellrenderer.Replace", {
+        extend : qx.ui.table.cellrenderer.Default,
+
+        properties : {
+
+          replaceMap : {
+            check : "Object",
+            nullable : true,
+            init : null
+          },
+          replaceFunction : {
+            check : "Function",
+            nullable : true,
+            init : null
+          }
+        },
+        members : {
+          // overridden
+          _getContentHtml : function (cellInfo) {
+            var value = cellInfo.value;
+            var replaceMap = this.getReplaceMap();
+            var replaceFunc = this.getReplaceFunction();
+            var label;
+
+            // use map
+            if (replaceMap) {
+              label = replaceMap[value];
+              if (typeof label != "undefined") {
+                cellInfo.value = label;
+                return qx.bom.String.escape(this._formatValue(cellInfo));
+              }
+            }
+
+            // use function
+            if (replaceFunc) {
+              cellInfo.value = replaceFunc(value);
+            }
+            return qx.bom.String.escape(this._formatValue(cellInfo));
+          },
+
+          addReversedReplaceMap : function () {
+            var map = this.getReplaceMap();
+            for (var key in map) {
+              var value = map[key];
+              map[value] = key;
+            }
+            return true;
+          }
+        }
+      });
+      
+      console.info("Maelstrom_Basescanner initialised");
+      
+      var T = Addons.Language.getInstance();
+      T.debug = false;
+      T.addtranslateobj( {main:"Point", de: "Position", pt: "Position", fr: "Position"} );
+      T.addtranslateobj( {main:"BaseScanner Overview", de: "Basescanner Übersicht", pt: "Visão geral do scanner de base", fr: "Aperçu du scanner de base"} );
+      T.addtranslateobj( {main:"Scan", de: "Scannen", pt: "Esquadrinhar", fr: "Balayer"} );
+      T.addtranslateobj( {main:"Location", de: "Lage", pt: "localização", fr: "Emplacement"} );
+      T.addtranslateobj( {main:"Player", de: "Spieler", pt: "Jogador", fr: "Joueur"} );
+      T.addtranslateobj( {main:"Bases", de: "Bases", pt: "Bases", fr: "Bases"} );
+      T.addtranslateobj( {main:"Camp,Outpost", de: "Lager,Vorposten", pt: "Camp,Posto avançado", fr: "Camp,Avant-poste"} );
+      T.addtranslateobj( {main:"Camp", de: "Lager", pt: "Camp", fr: "Camp"} );						
+      T.addtranslateobj( {main:"Outpost", de: "Vorposten", pt: "Posto avançado", fr: "Avant-poste"} );
+      T.addtranslateobj( {main:"BaseScanner Layout", de: "BaseScanner Layout", pt: "Layout da Base de Dados de Scanner", fr: "Mise scanner de base"} );
+      T.addtranslateobj( {main:"Show Layouts", de: "Layouts anzeigen", pt: "Mostrar Layouts", fr: "Voir Layouts"} );						
+      T.addtranslateobj( {main:"Building state", de: "Gebäudezustand", pt: "construção do Estado", fr: "construction de l'État"} );
+      T.addtranslateobj( {main:"Defense state", de: "Verteidigungszustand", pt: "de Defesa do Estado", fr: "défense de l'Etat"} );
+      T.addtranslateobj( {main:"CP", de: "KP", pt: "CP", fr: "CP"} );
+      T.addtranslateobj( {main:"CP Limit", de: "KP begrenzen", pt: "CP limitar", fr: "CP limiter"} );						
+      T.addtranslateobj( {main:"min Level", de: "min. Level", pt: "nível mínimo", fr: "niveau minimum"} );
+      T.addtranslateobj( {main:"clear Cache", de: "Cache leeren", pt: "limpar cache", fr: "vider le cache"} );
+      T.addtranslateobj( {main:"Only centre on World", de: "Nur auf Welt zentrieren", pt: "Único centro no Mundial", fr: "Seul centre sur World"} );
+      T.addtranslateobj( {main:"base set up at", de: "Basis errichtbar", pt: "base de configurar a", fr: "mis en place à la base"} );	
+      T.addtranslateobj( {main:"Infantry", de: "Infanterie", pt: "Infantaria", fr: "Infanterie"} );
+      T.addtranslateobj( {main:"Vehicle", de: "Fahrzeuge", pt: "Veículos", fr: "Vehicule"} );
+      T.addtranslateobj( {main:"Aircraft", de: "Flugzeuge", pt: "Aeronaves", fr: "Aviation"} );
+      T.addtranslateobj( {main:"Tiberium", de: "Tiberium", pt: "Tibério", fr: "Tiberium"} );
+      T.addtranslateobj( {main:"Crystal", de: "Kristalle", pt: "Cristal", fr: "Cristal"} );
+      T.addtranslateobj( {main:"Power", de: "Strom", pt: "Potência", fr: "Energie"} );
+      T.addtranslateobj( {main:"Dollar", de: "Credits", pt: "Créditos", fr: "Crédit"} );
+      T.addtranslateobj( {main:"Research", de: "Forschung", pt: "Investigação", fr: "Recherche"} );
+      T.addtranslateobj( {main:"All Layouts", de: "Alle Layouts", pt: "Todos os layouts", fr: "Toutes les mises en page"} );
+      T.addtranslateobj( {main:"-----", de: "--", pt: "--", fr: "--"} );
+          
+      var MT_Lang = null;
+      var MT_Cache = null;
+      var MT_Base = null;
+      var fileManager = null;
+      // var lastid = 0;
+      // var countlastidchecked = 0;
+      fileManager = ClientLib.File.FileManager.GetInstance();
+      // MT_Lang = window.MaelstromTools.Language.getInstance();
+      MT_Cache = window.MaelstromTools.Cache.getInstance();
+      MT_Base = window.MaelstromTools.Base.getInstance();
+
+      MT_Base.createNewImage("BaseScanner", "ui/icons/icon_item.png", fileManager);
+      MT_Base.createNewImage("Emptypixels", "ui/menues/main_menu/misc_empty_pixel.png", fileManager);
+      var openBaseScannerOverview = MT_Base.createDesktopButton(T.get("BaseScanner Overview") + "version " + window.__msbs_version, "BaseScanner", false, MT_Base.desktopPosition(2));
+      openBaseScannerOverview.addListener("execute", function () {
+        Addons.BaseScannerGUI.getInstance().openWindow(T.get("BaseScanner Overview") + " version " + window.__msbs_version);
+      }, this);
+      Addons.BaseScannerGUI.getInstance().addListener("close", Addons.BaseScannerGUI.getInstance().FN, Addons.BaseScannerGUI.getInstance());
+      //this.addListener("resize", function(){ }, this );
+      
+      MT_Base.addToMainMenu("BaseScanner", openBaseScannerOverview);
+      
+      if(typeof Addons.AddonMainMenu !== 'undefined'){
+        var addonmenu = Addons.AddonMainMenu.getInstance();
+        addonmenu.AddMainMenu("Basescanner", function () {
+          Addons.BaseScannerGUI.getInstance().openWindow(T.get("BaseScanner Overview") + " version " + window.__msbs_version);
+        },"ALT+B");
+      }
+      
+    }
+
+    function getResourcesPart(cityEntities) {
+      try {
+        var loot = [0, 0, 0, 0, 0, 0, 0, 0];
+        if (cityEntities == null) {
+          return loot;
+        }
+
+        for (var i in cityEntities) {
+          var cityEntity = cityEntities[i];
+          var unitLevelRequirements = MaelstromTools.Wrapper.GetUnitLevelRequirements(cityEntity);
+
+          for (var x = 0; x < unitLevelRequirements.length; x++) {
+            loot[unitLevelRequirements[x].Type] += unitLevelRequirements[x].Count * cityEntity.get_HitpointsPercent();
+            if (cityEntity.get_HitpointsPercent() < 1.0) {
+              // destroyed
+
+            }
+          }
+        }
+        return loot;
+      } catch (e) {
+        console.debug("MaelstromTools_Basescanner getResourcesPart", e);
+      }
+    }
+
+    function objfnkstrON(obj) {
+      var key;
+      for (key in obj) {
+        if (typeof(obj[key]) == "function") {
+          var s = obj[key].toString();
+          console.debug(key, s);
+          //var protostring = s.replace(/\s/gim, "");
+          //console.log(key, protostring);
+        }
+      }
+    }
+
+    function foundfnkstring(obj, redex, objname, n) {
+      var redexfounds = [];
+      var s = obj.toString();
+      var protostring = s.replace(/\s/gim, "");
+      redexfounds = protostring.match(redex);
+      var i;
+      for (i = 1; i < (n + 1); i++) {
+        if (redexfounds != null && redexfounds[i].length == 6) {
+          console.debug(objname, i, redexfounds[i]);
+        } else if (redexfounds != null && redexfounds[i].length > 0) {
+          console.warn(objname, i, redexfounds[i]);
+        } else {
+          console.error("Error - ", objname, i, "not found");
+          console.warn(objname, protostring);
+        }
+      }
+      return redexfounds;
+    }
+
+    function MaelstromTools_Basescanner_checkIfLoaded() {
+      try {
+        if (typeof qx != 'undefined' && typeof MaelstromTools != 'undefined') {
+          createMaelstromTools_Basescanner();
+        } else {
+          window.setTimeout(MaelstromTools_Basescanner_checkIfLoaded, 1000);
+        }
+      } catch (e) {
+        console.debug("MaelstromTools_Basescanner_checkIfLoaded: ", e);
+      }
+    }
+    if (/commandandconquer\.com/i.test(document.domain)) {
+      window.setTimeout(MaelstromTools_Basescanner_checkIfLoaded, 10000);
+    }
+  };
+  try {
+    var MaelstromScript_Basescanner = document.createElement("script");
+    MaelstromScript_Basescanner.innerHTML = "(" + MaelstromTools_Basescanner.toString() + ")();";
+    MaelstromScript_Basescanner.type = "text/javascript";
+    if (/commandandconquer\.com/i.test(document.domain)) {
+      document.getElementsByTagName("head")[0].appendChild(MaelstromScript_Basescanner);
+    }
+  } catch (e) {
+    console.debug("MaelstromTools_Basescanner: init error: ", e);
+  }
 })();
-
 }
 /*
 End of Maelstrom Tools Base Scanner
@@ -35504,7 +35588,7 @@ End of MENU FIX Chrome 55
 Start of Tiberium Alliances Auto Repair
 */
 if (Disable_TA_AutoRepair == true){
-eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('\'2s 2m\';(p(){7 n=p(){\'2s 2m\';p 3o(){1c.1e(\'y 5h\');q.1S.1W(\'y\',{1A:\'5T\',1M:q.T.1U,4x:{1s:{1J:10,1N:[9.t.x.5V,9.t.x.4u,9.t.x.4w,9.t.x.1Y,9.t.x.4y,9.t.x.4z,9.t.x.4A,9.t.x.4F,9.t.x.4M,9.t.x.50,9.t.x.53,9.t.x.2h,9.t.x.2j,9.t.x.5j]},28:[9.t.1x.6a,9.t.1x.6j,9.t.1x.3T,9.t.1x.4n]},2d:{1q:v,L:v,1p:v,11:v,J:v,M:v,2o:p(){3.2w();3.2z();3.2N();5q.5z.1n.5U(9.C.X.N().1T(),\'49\',9.C.4l,3,3.1i);3.1i()},2w:p(){7 a;r(1h 9.C.P.D.1L!==\'p\'){a=9.17.1w.2q.D.52.U();7 b=a.1E(/1g \\$I\\.[A-Z]{6}\\.2l:\\{B 3\\.[A-Z]{6}\\(\\)\\.([A-Z]{6})\\(\\);\\}/)[1];9.C.P.D.1L=9.C.P.D[b]}r(1h 9.C.P.D.1f!==\'p\'){a=9.17.1w.2q.D.3Y.U();7 c=a.1E(/1g \\$I\\.[A-Z]{6}\\.2l:\\{3\\.[A-Z]{6}\\(\\)\\.([A-Z]{6})\\(H\\);B R;\\}/)[1];9.C.P.D.1f=9.C.P.D[c]}r(1h 9.C.P.D.1z!==\'p\'){a=9.C.P.D.3i.U();7 d=a.1E(/B \\(3\\.([A-Z]{6})\\.[A-Z]{6}\\(\\)-[a-z]\\);/)[1];9.C.P.D.1z=p(){B 3[d]}}r(1h 1C.1K.1F.1H.D.2c!==\'p\'){a=2t>=2u?1C.1K.1F.1H.$$54.U():57.D.U.2g(1C.1K.1F.1H.D.5g);7 e=a.1E(/3\\.([A-2K-5k]+)=[A-2K-z]+\\.14;/)[1];1C.1K.1F.1H.D.2c=p(){B 3[e]}}r(y.D.15===v){r(9.1Q.1n.3m===3n){a=9.1Q.1n.15.U();7 f=a.3s(/^p (?:6m)?\\((a,b,c)(?:\\s\\/\\*\\*\\/)?\\)\\s?\\{/,\'p (3G,$1) {\').3s(/(7 [a-z])=\\$I\\.[A-Z]{6}\\.[A-Z]{6}\\(\\)\\.[A-Z]{6}\\(\\)\\.[A-Z]{6}\\(\\)\\.([A-Z]{6}\\(\\))/,\'$1=3G.$2\');y.D.15=4c(\'(\'+f+\')\')}V{y.D.15=9.1Q.1n.3m}}},2z:p(){3.11=w q.u.O.1G(\'2r-13\').K({4C:\'4D\',1u:8});3.11.E(\'1v\',3.2G,3);q.T.1j.1a().2O().2S().2c().E(\'2U\',3.2X,3)},2Y:p(){7 a=9.C.X.N().30().33();35.5E(\'36/\'+a+\'/2b\',39.5W({J:3.J,M:3.M}))},2N:p(){7 a=9.C.X.N().30().33();7 b=39.5Y(35.65(\'36/\'+a+\'/2b\'))||{};3.J=b.J||y.1s.1J;3.M=b.M||y.1s.1N},2X:p(a){7 b=a.66();r(9.17.3a.N().3d()===9.17.3h.1w){b.3S(3.11,0)}V r(3.11.3U()===b){b.3V(3.11)}},2G:p(){r(3.1q===v){3.1q=w y.1B(3.M,3.J);3.1q.E(\'Y\',3.1b,3)}3.1q.4g();q.T.1j.1a().2O().2S().4h(9.C.4i.4j.4k).3p(H)},1b:p(a){7 b=a.4m();3.J=b.J;3.M=b.M;3.2Y();r(3.L!==v){3.L.1V();3.L=v;1c.1e(\'y 4p 13 J 4r 3t 2b Y\');3.1i()}},1i:p(){r(3.1p!==v){3.1p.1V();3.1p=v}7 a=9.C.X.N().1T().3u().d;7 b=H;7 c=v;Q(7 d 1X a){7 e=a[d];r(!e.3J()&&e.1d()){r(!e.3L()){b=R;16}V r(c===v||e.2i()<c){c=e.2i()}}}r(b){r(3.L===v){1c.1e(\'y 4G 13 J\');3.L=w q.1I.2k(3.J*4O);3.L.E(\'J\',3.13,3);3.L.4P();3.13()}}V{r(3.L!==v){3.L.1V();3.L=v;1c.1e(\'y 4S 4T\')}r(c!==v){7 f=9.C.X.N().4V();3.1p=q.1I.2k.4W(3.1i,3,(c-f.4Y())/f.4Z()*22+51)}}},13:p(){7 b=9.C.X.N().1T().3u().d;Q(7 c 1X b){7 d=b[c];r(d.3J()||!d.1d()||d.3L()){6t}7 e=9.17.3a.N();7 f=e.3d();e.2n(9.17.3h.1w);7 g=3.2p();7 h=d.5f();7 j=R;Q(7 i=0;i<g.W;i++){7 k=h.5o(g[i]).l;7 l=k.5s(p(a){B a.1d()});l.5v(3.2v.5C(3));Q(7 a=0;a<l.W;a++){7 m=l[a];r(m.1L()){m.1f()}r(m.1d()){j=H;16}}r(!j){16}}r(j&&d.1d()&&d.5F()){d.5O()}e.2n(f)}},2p:p(){7 a=3.M.5Q();Q(7 i=0;i<a.W;i++){r(a[i]===9.t.x.1Y){a.5R(i+1,0,9.t.x.2x,9.t.x.2y);i+=2}}B a},2v:p(a,b){7 c=3.1O(a);7 d=3.1O(b);r(c===H){r(d===H){B 0}V{B 1}}V r(d===H){B-1}B c-d},1O:p(c){7 d=3.2A(c);7 e=1U.2B(d).2C(p(a,b){B a+d[b].2D},0);r(e<=0){B H}7 f=3.2E(c);7 g=1U.2B(f).2C(p(a,b){B a+f[b]},0);B g/e},2A:p(a){7 b=a.1z().6f(a);7 c={};r(b.2F!==v){7 d=b.2F.d;Q(7 i=0;i<y.28.W;i++){7 e=y.28[i];r(d[e]){7 f=d[e];c[e]={6l:f.1P,2D:(f.1P/a.3N())-f.1P}}}}B c},2E:p(a){7 b=9.t.1n.3O(3.15(a.1z(),a.3i(),a.3P(),1));7 c={};Q(7 i=0;i<b.W;i++){c[b[i].3Q]=b[i].3R}B c},15:v}});q.1S.1W(\'y.1B\',{1M:q.u.2H.2I,2J:p(a,b){q.u.2H.2I.2g(3);3.19=a;3.K({3W:\'2r 1f 3X\',2L:\'3Z/40/41.42\',43:H,44:H,45:H,46:H,47:H,48:\'2M-4a-4b\',1R:4d});3.4e(\'2L\').K({4f:R,1R:20,1y:20,2P:\'2Q\'});3.2R(w q.u.1k.2T(4));7 c=q.T.1j.1a().4o().2V();3.4q(c.2W+c.1R-3.4s()-4t,c.1l+c.1y-4v);7 d=w q.u.14.1m(w q.u.1k.2Z(4));d.F(w q.u.31.32(\'1J 1X 4B (5-34):\').K({2P:\'2Q\'}));d.F(w q.u.T.4E(),{1D:1});d.F(3.1o=w q.u.O.4H().K({4I:5,4J:34,4K:b}));3.1o.E(\'4L\',3.1b,3);3.F(d);3.S=w y.1B.37();3.S.E(\'Y\',3.1b,3);7 e=w q.u.14.1m(w q.u.1k.2T());e.F(w q.u.31.32(\'1f 4N (38 & 1Z):\'));e.F(3.S);3.F(e);7 f=w q.u.O.1G(\'4Q 3t 4R\').K({21:10,1u:10});f.E(\'1v\',3.3b,3);7 g=w q.u.O.1G(\'4U\').K({21:10,1u:10});g.E(\'1v\',3.3c,3);3.12=w q.u.O.1G(\'4X\').K({21:10,1u:10});3.12.E(\'1v\',3.3e,3);7 h=w q.u.14.1m(w q.u.1k.2Z(4));h.F(f,{1D:1});h.F(g,{1D:1});h.F(3.12,{1D:1});3.F(h);3.E(\'2U\',3.3f,3)},3g:{Y:\'q.1I.1A.C\'},2d:{S:v,1o:v,12:v,19:[],3f:p(){3.S.23();3.24(3.19);3.12.3j(H)},1b:p(){3.12.3j(R)},3b:p(){3.S.23();3.24(y.1s.1N);3.1o.3p(y.1s.1J)},3e:p(){3.19=3.S.3k().55(p(a){B a.56(\'3l\')});3.58(\'Y\',{J:3.1o.59(),M:3.19});3.3c()},24:p(a){7 b=9.5a.5b.N();7 c=9.C.X.N().5c().5d();Q(7 i=0;i<a.W;i++){7 d=b.25(9.t.26.27(a[i],c)).1r;5i(a[i]){1g 9.t.x.2j:d+=\' \'+b.3q(9.t.3r.5l).1r;16;1g 9.t.x.2h:d+=\' \'+b.3q(9.t.3r.5m).1r;16;1g 9.t.x.1Y:d=[d,b.25(9.t.26.27(9.t.x.2x,c)).1r,b.25(9.t.26.27(9.t.x.2y,c)).1r].5n(\'/\');16}7 e=w q.u.O.29(d);e.5p(\'3l\',a[i]);3.S.2a(e)}}}});q.1S.1W(\'y.1B.37\',{1M:q.u.14.1m,2J:p(){q.u.14.1m.2g(3);3.2R(w q.u.1k.5r());3.F(3.G=w q.u.O.5t().K({5u:R,3v:R,5w:\'5x\',1y:v}),{5y:1});3.F(3.18=w q.u.T.5A().K({5B:2t>=2u?w q.u.3w.5D().K({1l:[1,\'3x\',\'#3y\']}):w q.u.3w.5G().K({1l:[1,\'3x\',\'#3y\']}),1y:0,5H:0.5,5I:5J,3v:R,5K:\'5L\'}),{2W:6,5M:6});3.G.E(\'5N\',3.3z,3);3.G.E(\'5P\',3.3A,3);3.G.E(\'38\',3.3B,3);3.G.E(\'5S\',3.3C,3);3.G.E(\'1Z\',3.3D,3);3.G.E(\'2a\',3.3E,3);3.18.E(\'1Z\',3.3F,3)},3g:{Y:\'q.1I.1A.5X\'},2d:{G:v,1t:v,18:v,2a:p(a){3.G.F(a)},3k:p(){B 3.G.5Z()},23:p(){3.G.60()},3z:p(a){a.61(\'62\');3.18.63()},3A:p(a){3.18.64()},3B:p(a){7 b=a.3H();r(3.1t!==b&&b 3I q.u.O.29){3.1t=b;3.18.67({1l:b.2V().1l+4})}},3C:p(a){r(a.68()){a.69()}},3D:p(a){7 b=a.3H();r(!(b 3I q.u.O.29)){b=3.1t}3.2e(b)},3F:p(a){3.2e(3.1t)},3E:p(){3.6b(\'Y\')},2e:p(a){7 b=3.G.6c();Q(7 i=0;i<b.W;i++){3.G.6d(b[i],a);3.G.6e(b[i])}}}})}p 2f(){6g{r(1h q!==\'3n\'&&q.T.1j.1a()&&q.T.1j.1a().6h){3o();y.6i().2o()}V{3K(2f,22)}}6k(e){1c.1e(\'y: \',e.U())}}3K(2f,22)};7 o=3M.6n(\'6o\');o.6p=\'(\'+n.U()+\')();\';o.1A=\'2M/6q\';3M.6r(\'6s\')[0].5e(o)})();',62,402,'|||this||||var||ClientLib||||||||||||||||function|qx|if||Base|ui|null|new|ETechName|AutoRepair|||return|Data|prototype|addListener|add|list|false||interval|set|intervalTimer|repairOrder|GetInstance|form|CityEntity|for|true|repairOrderList|core|toString|else|length|MainData|change|||repairContainerButton|saveButton|repair|container|GetUnitRepairCosts|break|Vis|indicator|currentRepairOrder|getApplication|onSettingsChange|console|get_IsDamaged|log|Repair|case|typeof|onCitiesChange|Init|layout|top|Composite|Util|intervalSpinner|lockdownEndTimer|settingsWindow|dn|Defaults|currentItem|paddingRight|execute|City|EModifierType|height|get_City|type|SettingsWindow|webfrontend|flex|match|PlayArea|Button|PlayAreaHUD|event|Interval|gui|CanRepair|extend|RepairOrder|getBuildingReturnOnFullRepair|TotalValue|API|width|Class|get_Cities|Object|dispose|define|in|Support_Air|drop||paddingLeft|1000|removeAllItems|populateRepairOrderList|GetTech_Obj|Tech|GetTechIdFromTechNameAndFaction|ResourceModifierTypes|ListItem|addItem|settings|get_RepairContainer|members|reorderList|waitForGame|call|Harvester|get_LockdownEndStep|Harvester_Crystal|Timer|RepairBuilding|strict|set_Mode|initialize|getExpandedRepairItems|CityBuilding|Auto|use|PerforceChangelist|430398|compareBuildingReturnOnFullRepair|initializeHacks|Support_Ion|Support_Art|initializeUserInterface|getBuildingContinuousProductionPerHour|keys|reduce|Delta|getEntityFullRepairCosts|OwnProdModifiers|onRepairContainerButtonClick|window|Window|construct|Za|icon|text|loadSettings|getPlayArea|alignY|middle|setLayout|getHUD|VBox|appear|getBounds|left|onRepairContainerAppear|saveSettings|HBox|get_Server|basic|Label|get_WorldId|360|localStorage|TAAutoRepair|DraggableList|drag|JSON|VisMain|onResetClick|close|get_Mode|onSaveClick|onAppear|events|Mode|get_CurrentLevel|setEnabled|getItems|techName|GetUnitRepairCostsForCity|undefined|createAutoRepair|setValue|GetResource|EResourceType|replace|to|get_AllCities|droppable|decoration|solid|ccaf72|onDragStart|onDragEnd|onDrag|onDragOver|onDrop|onAddItem|onDropIndicator|city|getOriginalTarget|instanceof|get_IsGhostMode|setTimeout|get_IsLocked|document|get_HitpointsPercent|FilterResourceCosts|get_MdbUnitId|Type|Count|addAt|PowerProduction|getLayoutParent|remove|caption|Settings|ExecuteCommand|FactionUI|icons|icon_mode_repair|png|showMaximize|showMinimize|allowMaximize|allowMinimize|resizable|textColor|Change|label|light|eval|330|getChildControl|scale|open|getUIItem|Missions|PATH|WDG_REPAIR|CitiesChange|getData|TiberiumProduction|getMainOverlay|resetting|moveTo|due|getWidth|150|Construction_Yard|550|Defense_HQ|statics|Command_Center|Barracks|Factory|minutes|font|font_size_13|Spacer|Airport|starting|Spinner|minimum|maximum|value|changeValue|Silo|order|60000|start|Reset|default|repairs|finished|Cancel|get_Time|once|Save|GetServerStep|get_StepsPerSecond|Accumulator|500|CanExecuteCommand|PowerPlant|original|map|getUserData|Function|fireDataEvent|getValue|Res|ResMain|get_Player|get_Faction|appendChild|get_CityBuildingsData|constructor|loaded|switch|Refinery|z_|Crystal|Tiberium|join|GetAllBuildingsByTechName|setUserData|phe|Canvas|filter|List|draggable|sort|selectionMode|single|edge|cnc|Widget|decorator|bind|Decorator|setItem|CanRepairAll|Single|opacity|zIndex|100|visibility|excluded|right|dragstart|RepairAll|dragend|slice|splice|dragover|singleton|attachNetEvent|Defense_Facility|stringify|Event|parse|getChildren|removeAll|addAction|move|show|exclude|getItem|getTarget|setLayoutProperties|getRelatedTarget|preventDefault|CreditsProduction|fireNonBubblingEvent|getSortedSelection|addBefore|addToSelection|GetBuildingDetailViewInfo|try|initDone|getInstance|CrystalProduction|catch|Current|anonymous|createElement|script|innerHTML|javascript|getElementsByTagName|head|continue'.split('|'),0,{}))
+  eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('\'2s 2m\';(p(){7 n=p(){\'2s 2m\';p 3o(){1c.1e(\'y 5h\');q.1S.1W(\'y\',{1A:\'5T\',1M:q.T.1U,4x:{1s:{1J:10,1N:[9.t.x.5V,9.t.x.4u,9.t.x.4w,9.t.x.1Y,9.t.x.4y,9.t.x.4z,9.t.x.4A,9.t.x.4F,9.t.x.4M,9.t.x.50,9.t.x.53,9.t.x.2h,9.t.x.2j,9.t.x.5j]},28:[9.t.1x.6a,9.t.1x.6j,9.t.1x.3T,9.t.1x.4n]},2d:{1q:v,L:v,1p:v,11:v,J:v,M:v,2o:p(){3.2w();3.2z();3.2N();5q.5z.1n.5U(9.C.X.N().1T(),\'49\',9.C.4l,3,3.1i);3.1i()},2w:p(){7 a;r(1h 9.C.P.D.1L!==\'p\'){a=9.17.1w.2q.D.52.U();7 b=a.1E(/1g \\$I\\.[A-Z]{6}\\.2l:\\{B 3\\.[A-Z]{6}\\(\\)\\.([A-Z]{6})\\(\\);\\}/)[1];9.C.P.D.1L=9.C.P.D[b]}r(1h 9.C.P.D.1f!==\'p\'){a=9.17.1w.2q.D.3Y.U();7 c=a.1E(/1g \\$I\\.[A-Z]{6}\\.2l:\\{3\\.[A-Z]{6}\\(\\)\\.([A-Z]{6})\\(H\\);B R;\\}/)[1];9.C.P.D.1f=9.C.P.D[c]}r(1h 9.C.P.D.1z!==\'p\'){a=9.C.P.D.3i.U();7 d=a.1E(/B \\(3\\.([A-Z]{6})\\.[A-Z]{6}\\(\\)-[a-z]\\);/)[1];9.C.P.D.1z=p(){B 3[d]}}r(1h 1C.1K.1F.1H.D.2c!==\'p\'){a=2t>=2u?1C.1K.1F.1H.$$54.U():57.D.U.2g(1C.1K.1F.1H.D.5g);7 e=a.1E(/3\\.([A-2K-5k]+)=[A-2K-z]+\\.14;/)[1];1C.1K.1F.1H.D.2c=p(){B 3[e]}}r(y.D.15===v){r(9.1Q.1n.3m===3n){a=9.1Q.1n.15.U();7 f=a.3s(/^p (?:6m)?\\((a,b,c)(?:\\s\\/\\*\\*\\/)?\\)\\s?\\{/,\'p (3G,$1) {\').3s(/(7 [a-z])=\\$I\\.[A-Z]{6}\\.[A-Z]{6}\\(\\)\\.[A-Z]{6}\\(\\)\\.[A-Z]{6}\\(\\)\\.([A-Z]{6}\\(\\))/,\'$1=3G.$2\');y.D.15=4c(\'(\'+f+\')\')}V{y.D.15=9.1Q.1n.3m}}},2z:p(){3.11=w q.u.O.1G(\'2r-13\').K({4C:\'4D\',1u:8});3.11.E(\'1v\',3.2G,3);q.T.1j.1a().2O().2S().2c().E(\'2U\',3.2X,3)},2Y:p(){7 a=9.C.X.N().30().33();35.5E(\'36/\'+a+\'/2b\',39.5W({J:3.J,M:3.M}))},2N:p(){7 a=9.C.X.N().30().33();7 b=39.5Y(35.65(\'36/\'+a+\'/2b\'))||{};3.J=b.J||y.1s.1J;3.M=b.M||y.1s.1N},2X:p(a){7 b=a.66();r(9.17.3a.N().3d()===9.17.3h.1w){b.3S(3.11,0)}V r(3.11.3U()===b){b.3V(3.11)}},2G:p(){r(3.1q===v){3.1q=w y.1B(3.M,3.J);3.1q.E(\'Y\',3.1b,3)}3.1q.4g();q.T.1j.1a().2O().2S().4h(9.C.4i.4j.4k).3p(H)},1b:p(a){7 b=a.4m();3.J=b.J;3.M=b.M;3.2Y();r(3.L!==v){3.L.1V();3.L=v;1c.1e(\'y 4p 13 J 4r 3t 2b Y\');3.1i()}},1i:p(){r(3.1p!==v){3.1p.1V();3.1p=v}7 a=9.C.X.N().1T().3u().d;7 b=H;7 c=v;Q(7 d 1X a){7 e=a[d];r(!e.3J()&&e.1d()){r(!e.3L()){b=R;16}V r(c===v||e.2i()<c){c=e.2i()}}}r(b){r(3.L===v){1c.1e(\'y 4G 13 J\');3.L=w q.1I.2k(3.J*4O);3.L.E(\'J\',3.13,3);3.L.4P();3.13()}}V{r(3.L!==v){3.L.1V();3.L=v;1c.1e(\'y 4S 4T\')}r(c!==v){7 f=9.C.X.N().4V();3.1p=q.1I.2k.4W(3.1i,3,(c-f.4Y())/f.4Z()*22+51)}}},13:p(){7 b=9.C.X.N().1T().3u().d;Q(7 c 1X b){7 d=b[c];r(d.3J()||!d.1d()||d.3L()){6t}7 e=9.17.3a.N();7 f=e.3d();e.2n(9.17.3h.1w);7 g=3.2p();7 h=d.5f();7 j=R;Q(7 i=0;i<g.W;i++){7 k=h.5o(g[i]).l;7 l=k.5s(p(a){B a.1d()});l.5v(3.2v.5C(3));Q(7 a=0;a<l.W;a++){7 m=l[a];r(m.1L()){m.1f()}r(m.1d()){j=H;16}}r(!j){16}}r(j&&d.1d()&&d.5F()){d.5O()}e.2n(f)}},2p:p(){7 a=3.M.5Q();Q(7 i=0;i<a.W;i++){r(a[i]===9.t.x.1Y){a.5R(i+1,0,9.t.x.2x,9.t.x.2y);i+=2}}B a},2v:p(a,b){7 c=3.1O(a);7 d=3.1O(b);r(c===H){r(d===H){B 0}V{B 1}}V r(d===H){B-1}B c-d},1O:p(c){7 d=3.2A(c);7 e=1U.2B(d).2C(p(a,b){B a+d[b].2D},0);r(e<=0){B H}7 f=3.2E(c);7 g=1U.2B(f).2C(p(a,b){B a+f[b]},0);B g/e},2A:p(a){7 b=a.1z().6f(a);7 c={};r(b.2F!==v){7 d=b.2F.d;Q(7 i=0;i<y.28.W;i++){7 e=y.28[i];r(d[e]){7 f=d[e];c[e]={6l:f.1P,2D:(f.1P/a.3N())-f.1P}}}}B c},2E:p(a){7 b=9.t.1n.3O(3.15(a.1z(),a.3i(),a.3P(),1));7 c={};Q(7 i=0;i<b.W;i++){c[b[i].3Q]=b[i].3R}B c},15:v}});q.1S.1W(\'y.1B\',{1M:q.u.2H.2I,2J:p(a,b){q.u.2H.2I.2g(3);3.19=a;3.K({3W:\'2r 1f 3X\',2L:\'3Z/40/41.42\',43:H,44:H,45:H,46:H,47:H,48:\'2M-4a-4b\',1R:4d});3.4e(\'2L\').K({4f:R,1R:20,1y:20,2P:\'2Q\'});3.2R(w q.u.1k.2T(4));7 c=q.T.1j.1a().4o().2V();3.4q(c.2W+c.1R-3.4s()-4t,c.1l+c.1y-4v);7 d=w q.u.14.1m(w q.u.1k.2Z(4));d.F(w q.u.31.32(\'1J 1X 4B (5-34):\').K({2P:\'2Q\'}));d.F(w q.u.T.4E(),{1D:1});d.F(3.1o=w q.u.O.4H().K({4I:5,4J:34,4K:b}));3.1o.E(\'4L\',3.1b,3);3.F(d);3.S=w y.1B.37();3.S.E(\'Y\',3.1b,3);7 e=w q.u.14.1m(w q.u.1k.2T());e.F(w q.u.31.32(\'1f 4N (38 & 1Z):\'));e.F(3.S);3.F(e);7 f=w q.u.O.1G(\'4Q 3t 4R\').K({21:10,1u:10});f.E(\'1v\',3.3b,3);7 g=w q.u.O.1G(\'4U\').K({21:10,1u:10});g.E(\'1v\',3.3c,3);3.12=w q.u.O.1G(\'4X\').K({21:10,1u:10});3.12.E(\'1v\',3.3e,3);7 h=w q.u.14.1m(w q.u.1k.2Z(4));h.F(f,{1D:1});h.F(g,{1D:1});h.F(3.12,{1D:1});3.F(h);3.E(\'2U\',3.3f,3)},3g:{Y:\'q.1I.1A.C\'},2d:{S:v,1o:v,12:v,19:[],3f:p(){3.S.23();3.24(3.19);3.12.3j(H)},1b:p(){3.12.3j(R)},3b:p(){3.S.23();3.24(y.1s.1N);3.1o.3p(y.1s.1J)},3e:p(){3.19=3.S.3k().55(p(a){B a.56(\'3l\')});3.58(\'Y\',{J:3.1o.59(),M:3.19});3.3c()},24:p(a){7 b=9.5a.5b.N();7 c=9.C.X.N().5c().5d();Q(7 i=0;i<a.W;i++){7 d=b.25(9.t.26.27(a[i],c)).1r;5i(a[i]){1g 9.t.x.2j:d+=\' \'+b.3q(9.t.3r.5l).1r;16;1g 9.t.x.2h:d+=\' \'+b.3q(9.t.3r.5m).1r;16;1g 9.t.x.1Y:d=[d,b.25(9.t.26.27(9.t.x.2x,c)).1r,b.25(9.t.26.27(9.t.x.2y,c)).1r].5n(\'/\');16}7 e=w q.u.O.29(d);e.5p(\'3l\',a[i]);3.S.2a(e)}}}});q.1S.1W(\'y.1B.37\',{1M:q.u.14.1m,2J:p(){q.u.14.1m.2g(3);3.2R(w q.u.1k.5r());3.F(3.G=w q.u.O.5t().K({5u:R,3v:R,5w:\'5x\',1y:v}),{5y:1});3.F(3.18=w q.u.T.5A().K({5B:2t>=2u?w q.u.3w.5D().K({1l:[1,\'3x\',\'#3y\']}):w q.u.3w.5G().K({1l:[1,\'3x\',\'#3y\']}),1y:0,5H:0.5,5I:5J,3v:R,5K:\'5L\'}),{2W:6,5M:6});3.G.E(\'5N\',3.3z,3);3.G.E(\'5P\',3.3A,3);3.G.E(\'38\',3.3B,3);3.G.E(\'5S\',3.3C,3);3.G.E(\'1Z\',3.3D,3);3.G.E(\'2a\',3.3E,3);3.18.E(\'1Z\',3.3F,3)},3g:{Y:\'q.1I.1A.5X\'},2d:{G:v,1t:v,18:v,2a:p(a){3.G.F(a)},3k:p(){B 3.G.5Z()},23:p(){3.G.60()},3z:p(a){a.61(\'62\');3.18.63()},3A:p(a){3.18.64()},3B:p(a){7 b=a.3H();r(3.1t!==b&&b 3I q.u.O.29){3.1t=b;3.18.67({1l:b.2V().1l+4})}},3C:p(a){r(a.68()){a.69()}},3D:p(a){7 b=a.3H();r(!(b 3I q.u.O.29)){b=3.1t}3.2e(b)},3F:p(a){3.2e(3.1t)},3E:p(){3.6b(\'Y\')},2e:p(a){7 b=3.G.6c();Q(7 i=0;i<b.W;i++){3.G.6d(b[i],a);3.G.6e(b[i])}}}})}p 2f(){6g{r(1h q!==\'3n\'&&q.T.1j.1a()&&q.T.1j.1a().6h){3o();y.6i().2o()}V{3K(2f,22)}}6k(e){1c.1e(\'y: \',e.U())}}3K(2f,22)};7 o=3M.6n(\'6o\');o.6p=\'(\'+n.U()+\')();\';o.1A=\'2M/6q\';3M.6r(\'6s\')[0].5e(o)})();',62,402,'|||this||||var||ClientLib||||||||||||||||function|qx|if||Base|ui|null|new|ETechName|AutoRepair|||return|Data|prototype|addListener|add|list|false||interval|set|intervalTimer|repairOrder|GetInstance|form|CityEntity|for|true|repairOrderList|core|toString|else|length|MainData|change|||repairContainerButton|saveButton|repair|container|GetUnitRepairCosts|break|Vis|indicator|currentRepairOrder|getApplication|onSettingsChange|console|get_IsDamaged|log|Repair|case|typeof|onCitiesChange|Init|layout|top|Composite|Util|intervalSpinner|lockdownEndTimer|settingsWindow|dn|Defaults|currentItem|paddingRight|execute|City|EModifierType|height|get_City|type|SettingsWindow|webfrontend|flex|match|PlayArea|Button|PlayAreaHUD|event|Interval|gui|CanRepair|extend|RepairOrder|getBuildingReturnOnFullRepair|TotalValue|API|width|Class|get_Cities|Object|dispose|define|in|Support_Air|drop||paddingLeft|1000|removeAllItems|populateRepairOrderList|GetTech_Obj|Tech|GetTechIdFromTechNameAndFaction|ResourceModifierTypes|ListItem|addItem|settings|get_RepairContainer|members|reorderList|waitForGame|call|Harvester|get_LockdownEndStep|Harvester_Crystal|Timer|RepairBuilding|strict|set_Mode|initialize|getExpandedRepairItems|CityBuilding|Auto|use|PerforceChangelist|430398|compareBuildingReturnOnFullRepair|initializeHacks|Support_Ion|Support_Art|initializeUserInterface|getBuildingContinuousProductionPerHour|keys|reduce|Delta|getEntityFullRepairCosts|OwnProdModifiers|onRepairContainerButtonClick|window|Window|construct|Za|icon|text|loadSettings|getPlayArea|alignY|middle|setLayout|getHUD|VBox|appear|getBounds|left|onRepairContainerAppear|saveSettings|HBox|get_Server|basic|Label|get_WorldId|360|localStorage|TAAutoRepair|DraggableList|drag|JSON|VisMain|onResetClick|close|get_Mode|onSaveClick|onAppear|events|Mode|get_CurrentLevel|setEnabled|getItems|techName|GetUnitRepairCostsForCity|undefined|createAutoRepair|setValue|GetResource|EResourceType|replace|to|get_AllCities|droppable|decoration|solid|ccaf72|onDragStart|onDragEnd|onDrag|onDragOver|onDrop|onAddItem|onDropIndicator|city|getOriginalTarget|instanceof|get_IsGhostMode|setTimeout|get_IsLocked|document|get_HitpointsPercent|FilterResourceCosts|get_MdbUnitId|Type|Count|addAt|PowerProduction|getLayoutParent|remove|caption|Settings|ExecuteCommand|FactionUI|icons|icon_mode_repair|png|showMaximize|showMinimize|allowMaximize|allowMinimize|resizable|textColor|Change|label|light|eval|330|getChildControl|scale|open|getUIItem|Missions|PATH|WDG_REPAIR|CitiesChange|getData|TiberiumProduction|getMainOverlay|resetting|moveTo|due|getWidth|150|Construction_Yard|550|Defense_HQ|statics|Command_Center|Barracks|Factory|minutes|font|font_size_13|Spacer|Airport|starting|Spinner|minimum|maximum|value|changeValue|Silo|order|60000|start|Reset|default|repairs|finished|Cancel|get_Time|once|Save|GetServerStep|get_StepsPerSecond|Accumulator|500|CanExecuteCommand|PowerPlant|original|map|getUserData|Function|fireDataEvent|getValue|Res|ResMain|get_Player|get_Faction|appendChild|get_CityBuildingsData|constructor|loaded|switch|Refinery|z_|Crystal|Tiberium|join|GetAllBuildingsByTechName|setUserData|phe|Canvas|filter|List|draggable|sort|selectionMode|single|edge|cnc|Widget|decorator|bind|Decorator|setItem|CanRepairAll|Single|opacity|zIndex|100|visibility|excluded|right|dragstart|RepairAll|dragend|slice|splice|dragover|singleton|attachNetEvent|Defense_Facility|stringify|Event|parse|getChildren|removeAll|addAction|move|show|exclude|getItem|getTarget|setLayoutProperties|getRelatedTarget|preventDefault|CreditsProduction|fireNonBubblingEvent|getSortedSelection|addBefore|addToSelection|GetBuildingDetailViewInfo|try|initDone|getInstance|CrystalProduction|catch|Current|anonymous|createElement|script|innerHTML|javascript|getElementsByTagName|head|continue'.split('|'),0,{}))
 }
 /*
 End of Tiberium Alliances Auto Repair
