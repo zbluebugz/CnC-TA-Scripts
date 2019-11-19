@@ -15,4 +15,4 @@ All newly added scripts are disabled by default. Visit the Settings Window to en
 Notes: 
 - Original source of this repository is: https://github.com/Debitosphere/CNC.TA.Crucial.Scripts.
 - Some script components have been updated with code sourced from https://github.com/leo7044/CnC_TA repository.
-- Scripts in this repoistory here have been tweaked to work with 19.4.
+- Scripts in this repository here have been tweaked to work with 19.4.
