@@ -21,9 +21,9 @@
 		function createMaelstromTools_Basescanner() {
 
 			qx.Class.define("Addons.BaseScannerGUI", {
-				type : "singleton",
-				extend : qx.ui.window.Window,
-				construct : function () {
+				type: "singleton",
+				extend: qx.ui.window.Window,
+				construct: function () {
 					try {
 						this.base(arguments);
 						console.info("Addons.BaseScannerGUI " + window.__msbs_version);
@@ -55,47 +55,47 @@
 						this.add(this.ZF);
 						this.add(this.ZN);
 						this.add(this.ZP);
-						this.ZL.setData(this.ZE);							
+						this.ZL.setData(this.ZE);
 
 					} catch (e) {
 						console.debug("Addons.BaseScannerGUI.construct: ", e);
 					}
 				},
-				members : {
+				members: {
 					// pictures
-					
-					T : null,
-					ZA : 0,
-					ZB : null,
-					ZC : null,
-					ZD : null,
-					ZE : null,
-					ZF : null,
-					ZG : null,
-					ZH : false,
-					ZI : true,
-					ZJ : null,
-					ZK : null,
-					ZL : null,
-					ZM : null,
-					ZN : null,
-					ZO : null,
-					ZP : null,
-					ZQ : null,
-					ZR : [],
-					ZT : true,
-					ZU : null,
-					ZV : null,
-					ZX : null,
-					ZY : null,
-					ZZ : [],
-					ZS : {},
-					YZ : null,
-                    YY : null,
-                    crysCounter : null,
-                    tibCounter : null,
-					
-					openWindow : function (title) {
+
+					T: null,
+					ZA: 0,
+					ZB: null,
+					ZC: null,
+					ZD: null,
+					ZE: null,
+					ZF: null,
+					ZG: null,
+					ZH: false,
+					ZI: true,
+					ZJ: null,
+					ZK: null,
+					ZL: null,
+					ZM: null,
+					ZN: null,
+					ZO: null,
+					ZP: null,
+					ZQ: null,
+					ZR: [],
+					ZT: true,
+					ZU: null,
+					ZV: null,
+					ZX: null,
+					ZY: null,
+					ZZ: [],
+					ZS: {},
+					YZ: null,
+					YY: null,
+					crysCounter: null,
+					tibCounter: null,
+
+					openWindow: function (title) {
 						try {
 							this.setCaption(title);
 							if (this.isVisible()) {
@@ -103,7 +103,7 @@
 							} else {
 								MT_Cache.updateCityCache();
 								MT_Cache = window.MaelstromTools.Cache.getInstance();
-								var cname;								
+								var cname;
 								this.ZC.removeAll();
 								for (cname in MT_Cache.Cities) {
 									var item = new qx.ui.form.ListItem(cname, null, MT_Cache.Cities[cname].Object);
@@ -111,7 +111,7 @@
 									if (Addons.LocalStorage.getserver("Basescanner_LastCityID") == MT_Cache.Cities[cname].Object.get_Id()) {
 										this.ZC.setSelection([item]);
 									}
-								}							
+								}
 								this.open();
 								this.moveTo(100, 100);
 							}
@@ -119,7 +119,7 @@
 							console.log("MaelstromTools.DefaultObject.openWindow: ", e);
 						}
 					},
-					FI : function () {
+					FI: function () {
 						try {
 							this.ZL = new qx.ui.table.model.Simple();
 							this.ZL.setColumns(["ID", "LoadState", this.T.get("City"), this.T.get("Location"), this.T.get("Level"), this.T.get("Tiberium"), this.T.get("Crystal"), this.T.get("Dollar"), this.T.get("Research"), "Crystalfields", "Tiberiumfields", this.T.get("Building state"), this.T.get("Defense state"), this.T.get("CP"), "Def.HP/Off.HP", "Sum Tib+Cry+Cre", "(Tib+Cry+Cre)/CP", "CY", "DF", this.T.get("base set up at"), "6+5+4+3t Tib", "6+5+4+3t Crys", "6+5+4+3t Mixed"]);
@@ -161,23 +161,23 @@
 							tcm.setColumnVisible(1, false);
 							tcm.setHeaderCellRenderer(9, new qx.ui.table.headerrenderer.Icon(MT_Base.images[MaelstromTools.Statics.Crystal]), "Crystalfields");
 							tcm.setHeaderCellRenderer(10, new qx.ui.table.headerrenderer.Icon(MT_Base.images[MaelstromTools.Statics.Tiberium], "Tiberiumfields"));
-							tcm.setDataCellRenderer(5, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
-							tcm.setDataCellRenderer(6, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
-							tcm.setDataCellRenderer(7, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
-							tcm.setDataCellRenderer(8, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
-							tcm.setDataCellRenderer(15, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
-							tcm.setDataCellRenderer(16, new qx.ui.table.cellrenderer.Replace().set({ReplaceFunction : this.FA}));
+							tcm.setDataCellRenderer(5, new qx.ui.table.cellrenderer.Replace().set({ ReplaceFunction: this.FA }));
+							tcm.setDataCellRenderer(6, new qx.ui.table.cellrenderer.Replace().set({ ReplaceFunction: this.FA }));
+							tcm.setDataCellRenderer(7, new qx.ui.table.cellrenderer.Replace().set({ ReplaceFunction: this.FA }));
+							tcm.setDataCellRenderer(8, new qx.ui.table.cellrenderer.Replace().set({ ReplaceFunction: this.FA }));
+							tcm.setDataCellRenderer(15, new qx.ui.table.cellrenderer.Replace().set({ ReplaceFunction: this.FA }));
+							tcm.setDataCellRenderer(16, new qx.ui.table.cellrenderer.Replace().set({ ReplaceFunction: this.FA }));
 							tcm.setDataCellRenderer(19, new qx.ui.table.cellrenderer.Boolean());
-							
-							if (PerforceChangelist >= 436669) { 
-                                // 15.3 patch
+
+							if (PerforceChangelist >= 436669) {
+								// 15.3 patch
 								var eventType = "cellDbltap";
-                            } 
-                            else { 
-                                //old
+							}
+							else {
+								//old
 								var eventType = "cellDblclick";
 							}
-				
+
 							this.ZN.addListener(eventType, function (e) {
 								Addons.BaseScannerGUI.getInstance().FB(e);
 							}, this);
@@ -193,9 +193,9 @@
 							console.debug("Addons.BaseScannerGUI.FI: ", e);
 						}
 					},
-					FB : function (e) {
+					FB: function (e) {
 						try {
-							console.log("e",e.getRow(),this.ZE);
+							console.log("e", e.getRow(), this.ZE);
 							var cityId = this.ZE[e.getRow()][0];
 							var posData = this.ZE[e.getRow()][3];
 							/* center screen */
@@ -215,21 +215,21 @@
 							}
 
 							var q = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
-							if (q != null) 
+							if (q != null)
 								q.get_CityArmyFormationsManager().set_CurrentTargetBaseId(cityId);
 
 						} catch (ex) {
 							console.debug("Addons.BaseScannerGUI FB error: ", ex);
 						}
 					},
-					FN : function (e) {
+					FN: function (e) {
 						this.ZG.setLabel(this.T.get("Scan"));
 						this.ZH = false;
 					},
-					CBChanged : function (e) {
+					CBChanged: function (e) {
 						this.ZH = false;
 					},
-					FA : function (oValue) {
+					FA: function (oValue) {
 						var f = new qx.util.format.NumberFormat();
 						f.setGroupingUsed(true);
 						f.setMaximumFractionDigits(3);
@@ -277,7 +277,7 @@
 					// console.debug("Addons.BaseScannerGUI.setWidgetLabels: ", e);
 					// }
 					// },
-					FH : function () {
+					FH: function () {
 						try {
 							var oBox = new qx.ui.layout.Flow();
 							var oOptions = new qx.ui.container.Composite(oBox);
@@ -294,7 +294,7 @@
 									this.ZC.setSelection([item]);
 								}
 							}
-							this.ZC.addListener("changeSelection", function (e) {								
+							this.ZC.addListener("changeSelection", function (e) {
 								this.FP(0, 1, 200);
 								this.ZH = false;
 								this.ZG.setLabel(this.T.get("Scan"));
@@ -302,10 +302,10 @@
 							oOptions.add(this.ZC);
 
 							var l = new qx.ui.basic.Label().set({
-									value : this.T.get("CP Limit"),
-									textColor : "white",
-									margin : 5
-								});
+								value: this.T.get("CP Limit"),
+								textColor: "white",
+								margin: 5
+							});
 							oOptions.add(l);
 
 							this.ZQ = new qx.ui.form.SelectBox();
@@ -329,16 +329,16 @@
 							oOptions.add(this.ZQ);
 
 							var la = new qx.ui.basic.Label().set({
-									value : this.T.get("min Level"),
-									textColor : "white",
-									margin : 5
-								});
-                            oOptions.add(la);
-                            
+								value: this.T.get("min Level"),
+								textColor: "white",
+								margin: 5
+							});
+							oOptions.add(la);
+
 							var minlevel = Addons.LocalStorage.getserver("Basescanner_minLevel", "1");
 							this.ZY = new qx.ui.form.TextField(minlevel).set({
-									width : 50
-								});
+								width: 50
+							});
 							oOptions.add(this.ZY);
 
 							this.ZK = [];
@@ -352,8 +352,8 @@
 								this.ZH = false;
 								this.ZG.setLabel(this.T.get("Scan"));
 							}, this);
-                            oOptions.add(this.ZK[0]);
-                            
+							oOptions.add(this.ZK[0]);
+
 							this.ZK[1] = new qx.ui.form.CheckBox(this.T.get("Bases"));
 							this.ZK[1].setMargin(5);
 							this.ZK[1].setTextColor("white");
@@ -365,8 +365,8 @@
 								this.ZG.setLabel(this.T.get("Scan"));
 							}, this);
 							oOptions.add(this.ZK[1]);
-                            
-                            this.ZK[2] = new qx.ui.form.CheckBox(this.T.get("Outpost"));
+
+							this.ZK[2] = new qx.ui.form.CheckBox(this.T.get("Outpost"));
 							this.ZK[2].setMargin(5);
 							this.ZK[2].setTextColor("white");
 							this.ZK[2].setValue(Addons.LocalStorage.getserver("Basescanner_Show2", true));
@@ -377,8 +377,8 @@
 								this.ZG.setLabel(this.T.get("Scan"));
 							}, this);
 							oOptions.add(this.ZK[2]);
-                            
-                            this.ZK[3] = new qx.ui.form.CheckBox(this.T.get("Camp"));
+
+							this.ZK[3] = new qx.ui.form.CheckBox(this.T.get("Camp"));
 							this.ZK[3].setMargin(5);
 							this.ZK[3].setTextColor("white");
 							this.ZK[3].setValue(Addons.LocalStorage.getserver("Basescanner_Show3", true));
@@ -389,61 +389,61 @@
 								this.ZG.setLabel(this.T.get("Scan"));
 							}, this);
 							oOptions.add(this.ZK[3], {
-								lineBreak : true
+								lineBreak: true
 							});
 
 							this.ZG = new qx.ui.form.Button(this.T.get("Scan")).set({
-									width : 100,
-									minWidth : 100,
-									maxWidth : 100,
-									height : 25,
-									margin : 5
-								});
+								width: 100,
+								minWidth: 100,
+								maxWidth: 100,
+								height: 25,
+								margin: 5
+							});
 							this.ZG.addListener("execute", function () {
-        							this.FE();
-		    					}, this);
+								this.FE();
+							}, this);
 							oOptions.add(this.ZG);
 
 							var border = new qx.ui.decoration.Decorator(2, "solid", "blue");
 							this.ZV = new qx.ui.container.Composite(new qx.ui.layout.Basic()).set({
-									decorator : border,
-									backgroundColor : "red",
-									allowGrowX : false,
-									height : 20,
-									width : 200
-								});
+								decorator: border,
+								backgroundColor: "red",
+								allowGrowX: false,
+								height: 20,
+								width: 200
+							});
 							this.ZU = new qx.ui.core.Widget().set({
-									decorator : null,
-									backgroundColor : "green",
-									width : 0
-								});
+								decorator: null,
+								backgroundColor: "green",
+								width: 0
+							});
 							this.ZV.add(this.ZU);
 							this.ZX = new qx.ui.basic.Label("").set({
-									decorator : null,
-									textAlign : "center",
-									width : 200
-								});
+								decorator: null,
+								textAlign: "center",
+								width: 200
+							});
 							this.ZV.add(this.ZX, {
-                                    left : 0,
-                                    top : -3
-                                });
+								left: 0,
+								top: -3
+							});
 							oOptions.add(this.ZV);
 
 							this.YZ = new qx.ui.form.Button(this.T.get("clear Cache")).set({
-									minWidth : 100,
-									height : 25,
-									margin : 5
-								});
+								minWidth: 100,
+								height: 25,
+								margin: 5
+							});
 							this.YZ.addListener("execute", function () {
-								    this.ZZ = [];
-							    }, this);
+								this.ZZ = [];
+							}, this);
 							oOptions.add(this.YZ);
 
 							this.ZK[4] = new qx.ui.form.CheckBox(this.T.get("Only centre on World"));
 							this.ZK[4].setMargin(5);
 							this.ZK[4].setTextColor("white");
 							oOptions.add(this.ZK[4], {
-								lineBreak : true
+								lineBreak: true
 							});
 
 							this.ZJ = new qx.ui.form.SelectBox();
@@ -460,12 +460,12 @@
 							this.ZJ.add(item);
 							oOptions.add(this.ZJ);
 							this.ZD = new qx.ui.form.Button(this.T.get("Get Layouts")).set({
-									width : 120,
-									minWidth : 120,
-									maxWidth : 120,
-									height : 25,
-									margin : 5
-								});
+								width: 120,
+								minWidth: 120,
+								maxWidth: 120,
+								height: 25,
+								margin: 5
+							});
 							this.ZD.addListener("execute", function () {
 								var layout = window.Addons.BaseScannerLayout.getInstance();
 								layout.openWindow(this.T.get("BaseScanner Layout"));
@@ -503,14 +503,14 @@
 							}
 
 							this.ZO = new qx.ui.form.Button("+").set({
-									margin : 5
-								});
+								margin: 5
+							});
 							this.ZO.addListener("execute", function () {
 								if (this.ZI) {
 									oOptions.addAfter(this.ZB, this.ZO);
 									this.ZO.setLabel("-");
-                                } 
-                                else {
+								}
+								else {
 									oOptions.remove(this.ZB);
 									this.ZO.setLabel("+");
 								}
@@ -518,7 +518,7 @@
 							}, this);
 							this.ZO.setAlignX("right");
 							oOptions.add(this.ZO, {
-								lineBreak : true
+								lineBreak: true
 							});
 
 							this.ZF = oOptions;
@@ -527,19 +527,19 @@
 							console.debug("Addons.BaseScannerGUI.createOptions: ", e);
 						}
 					},
-					FD : function () {
+					FD: function () {
 						//0.7
 						//var n = ClientLib.Data.MainData.GetInstance().get_Cities();
 						//var i = n.get_CurrentOwnCity();
 						var st = '<a href="https://sites.google.com/site/blindmanxdonate" target="_blank">Support Development of BlinDManX Addons</a>';
 						var l = new qx.ui.basic.Label().set({
-								value : st,
-								rich : true,
-								width : 800
-							});
+							value: st,
+							rich: true,
+							width: 800
+						});
 						this.ZP = l;
 					},
-					FE : function () {
+					FE: function () {
 						var selectedBase = this.ZC.getSelection()[0].getModel();
 						ClientLib.Vis.VisMain.GetInstance().CenterGridPosition(selectedBase.get_PosX(), selectedBase.get_PosY()); //Load data of region
 						ClientLib.Vis.VisMain.GetInstance().Update();
@@ -554,16 +554,16 @@
 								obj.getLevel = function () {
 									return this[fa[1]];
 								};
-                            } 
-                            else {
+							}
+							else {
 								console.error("Error - ClientLib.Data.WorldSector.WorldObjectCity.Level undefined");
 							}
 							if (fa != null && fa[2].length == 6) {
 								obj.getID = function () {
 									return this[fa[2]];
 								};
-                            } 
-                            else {
+							}
+							else {
 								console.error("Error - ClientLib.Data.WorldSector.WorldObjectCity.ID undefined");
 							}
 
@@ -574,16 +574,16 @@
 								obj.getLevel = function () {
 									return this[fb[1]];
 								};
-                            } 
-                            else {
+							}
+							else {
 								console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCBase.Level undefined");
 							}
 							if (fb != null && fb[2].length == 6) {
 								obj.getID = function () {
 									return this[fb[2]];
 								};
-                            } 
-                            else {
+							}
+							else {
 								console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCBase.ID undefined");
 							}
 
@@ -594,16 +594,16 @@
 								obj.getLevel = function () {
 									return this[fc[1]];
 								};
-                            } 
-                            else {
+							}
+							else {
 								console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCCamp.Level undefined");
 							}
 							if (fc != null && fc[2].length == 6) {
 								obj.getCampType = function () {
 									return this[fc[2]];
 								};
-                            } 
-                            else {
+							}
+							else {
 								console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCCamp.CampType undefined");
 							}
 
@@ -611,8 +611,8 @@
 								obj.getID = function () {
 									return this[fc[4]];
 								};
-                            } 
-                            else {
+							}
+							else {
 								console.error("Error - ClientLib.Data.WorldSector.WorldObjectNPCCamp.ID undefined");
 							}
 							this.ZT = false;
@@ -641,28 +641,28 @@
 								this.ZH = true;
 								window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FG()", 1000);
 								return;
-                            } 
-                            else {
+							}
+							else {
 								this.ZH = false;
 								window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FJ()", 1000);
 							}
-                        } 
-                        else {
+						}
+						else {
 							this.ZH = false;
 							this.ZG.setLabel(this.T.get("Scan"));
 						}
 
 					},
-					FP : function (value, max, maxwidth) {
+					FP: function (value, max, maxwidth) {
 						if (this.ZU != null && this.ZX != null) {
 							this.ZU.setWidth(parseInt(value / max * maxwidth, 10));
 							this.ZX.setValue(value + "/" + max);
 						}
 					},
-					FJ : function () {
+					FJ: function () {
 						try {
 							this.ZM = {};
-                            this.crysCounter = {};
+							this.crysCounter = {};
 							this.tibCounter = {};
 							this.ZE = [];
 							var selectedBase = this.ZC.getSelection()[0].getModel();
@@ -705,7 +705,7 @@
 										var loot = {};
 										if (object) {
 											//console.log(object);
-                                            
+
 											// if (object.Type == 1 && t1) {
 											// 	//console.log("object typ 1");
 											// 	//objfnkstrON(object);
@@ -746,22 +746,22 @@
 														//console.log("object ID LEVEL", object.getID() ,object.getLevel() );
 														if (d != null) {
 															this.ZE.push(d);
-                                                        } 
-                                                        else {
-															this.ZE.push([object.getID(),  - 1, this.T.get("Player"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0 ,0]);
+														}
+														else {
+															this.ZE.push([object.getID(), - 1, this.T.get("Player"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0, 0]);
 														}
 													}
 													else if (object.Type == 2 && c2) { //basen
 														//console.log("object ID LEVEL", object.getID() ,object.getLevel() );
 														if (d != null) {
 															this.ZE.push(d);
-                                                        } 
-                                                        else {
-															this.ZE.push([object.getID(),  - 1, this.T.get("Bases"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0 ,0]);
+														}
+														else {
+															this.ZE.push([object.getID(), - 1, this.T.get("Bases"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0, 0]);
 														}
 													}
 													else if (object.Type == 3 && (c3 || c4)) { //Lager Vposten
-                                                        //debugger;
+														//debugger;
 														//console.log("object ID LEVEL", object.getID() ,object.getLevel() );
 														if (d != null) {
 															if ((object.getCampType() == 2 || object.getCampType() == 1) && c4) {
@@ -774,16 +774,16 @@
 																this.ZE.push(d);
 															}
 
-                                                        } 
-                                                        else {
+														}
+														else {
 															if ((object.getCampType() == 7 || object.getCampType() == 2 || object.getCampType() == 1) && c4) {
-																this.ZE.push([object.getID(),  - 1, this.T.get("Camp"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0 ,0]);
+																this.ZE.push([object.getID(), - 1, this.T.get("Camp"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0, 0]);
 															}
 															else if ((object.getCampType() == 7) && c4) {
-																this.ZE.push([object.getID(),  - 1, this.T.get("Infected Camp"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0 ,0]);
+																this.ZE.push([object.getID(), - 1, this.T.get("Infected Camp"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0, 0]);
 															}
 															else if (object.getCampType() == 3 && c3) {
-																this.ZE.push([object.getID(),  - 1, this.T.get("Outpost"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0 ,0]);
+																this.ZE.push([object.getID(), - 1, this.T.get("Outpost"), scanX + ":" + scanY, object.getLevel(), 0, 0, 0, 0, 0, 0, 0, 0, needcp, 0, 0, 0, 0, 0, 0, 0]);
 															}
 														}
 													}
@@ -804,7 +804,7 @@
 							console.debug("Maelstrom_Basescanner FJ error: ", ex);
 						}
 					},
-					FG : function () {
+					FG: function () {
 						try {
 							var retry = false;
 							var loops = 0;
@@ -895,65 +895,65 @@
 															this.tibCounter[id] = new Array(9);
 															for (m = 0; m < 9; m++) {
 																this.ZM[id][m] = new Array(8);
-                                                                this.crysCounter[id][m] = new Array(9).join('0').split('').map(parseFloat);
-                                                                this.tibCounter[id][m] = new Array(9).join('0').split('').map(parseFloat);
+																this.crysCounter[id][m] = new Array(9).join('0').split('').map(parseFloat);
+																this.tibCounter[id][m] = new Array(9).join('0').split('').map(parseFloat);
 															}
 															for (k = 1; k < 8; k++) {
 																for (l = 1; l < 7; l++) {
 																	//console.log( ncity.GetResourceType(k,l) );
 																	switch (ncity.GetResourceType(k, l)) {
-																	case 1:
-																		/* Crystal */
-																		this.ZM[id][k][l] = 1;
-																		this.crysCounter[id][k-1][l]++;
-																		this.crysCounter[id][k-1][l-1]++;
-																		this.crysCounter[id][k-1][l+1]++;
-                                                                            
-																		this.crysCounter[id][k+1][l]++;
-																		this.crysCounter[id][k+1][l-1]++;
-																		this.crysCounter[id][k+1][l+1]++;
-                                                                            
-																		this.crysCounter[id][k][l-1]++;
-																		this.crysCounter[id][k][l+1]++;
-																		c++;
-																		break;
-																	case 2:
-																		/* Tiberium */
-																		this.ZM[id][k][l] = 2;
-																		this.tibCounter[id][k-1][l]++;
-																		this.tibCounter[id][k-1][l-1]++;
-																		this.tibCounter[id][k-1][l+1]++;
-                                                                            
-																		this.tibCounter[id][k+1][l]++;
-																		this.tibCounter[id][k+1][l-1]++;
-																		this.tibCounter[id][k+1][l+1]++;
-                                                                            
-																		this.tibCounter[id][k][l-1]++;
-																		this.tibCounter[id][k][l+1]++;
-																		t++;
-																		break;
-																	default:
-																		//none
-																		break;
+																		case 1:
+																			/* Crystal */
+																			this.ZM[id][k][l] = 1;
+																			this.crysCounter[id][k - 1][l]++;
+																			this.crysCounter[id][k - 1][l - 1]++;
+																			this.crysCounter[id][k - 1][l + 1]++;
+
+																			this.crysCounter[id][k + 1][l]++;
+																			this.crysCounter[id][k + 1][l - 1]++;
+																			this.crysCounter[id][k + 1][l + 1]++;
+
+																			this.crysCounter[id][k][l - 1]++;
+																			this.crysCounter[id][k][l + 1]++;
+																			c++;
+																			break;
+																		case 2:
+																			/* Tiberium */
+																			this.ZM[id][k][l] = 2;
+																			this.tibCounter[id][k - 1][l]++;
+																			this.tibCounter[id][k - 1][l - 1]++;
+																			this.tibCounter[id][k - 1][l + 1]++;
+
+																			this.tibCounter[id][k + 1][l]++;
+																			this.tibCounter[id][k + 1][l - 1]++;
+																			this.tibCounter[id][k + 1][l + 1]++;
+
+																			this.tibCounter[id][k][l - 1]++;
+																			this.tibCounter[id][k][l + 1]++;
+																			t++;
+																			break;
+																		default:
+																			//none
+																			break;
 																	}
 																}
 															}
-                                                            var tib_xtouch = new Array(6).join('0').split('').map(parseFloat);
-                                                            var crys_xtouch = new Array(6).join('0').split('').map(parseFloat);
-                                                            var mixed_xtouch = new Array(6).join('0').split('').map(parseFloat);
-                                                            for (k = 0; k < 9; k++) {
+															var tib_xtouch = new Array(6).join('0').split('').map(parseFloat);
+															var crys_xtouch = new Array(6).join('0').split('').map(parseFloat);
+															var mixed_xtouch = new Array(6).join('0').split('').map(parseFloat);
+															for (k = 0; k < 9; k++) {
 																for (l = 0; l < 8; l++) {
-                                                                    if (this.ZM[id][k][l] != 1 && this.ZM[id][k][l] != 2) {
-                                                                        if (this.tibCounter[id][k][l] > 0 && this.crysCounter[id][k][l] > 0 && (this.tibCounter[id][k][l] + this.crysCounter[id][k][l] >= 3)) {
-                                                                            mixed_xtouch[this.tibCounter[id][k][l] + this.crysCounter[id][k][l]-3]++;
-                                                                        }
-                                                                        else if (this.tibCounter[id][k][l] >= 3 ) {
-                                                                            tib_xtouch[this.tibCounter[id][k][l] -3]++;                                                                          
-                                                                        }
-                                                                        else if (this.crysCounter[id][k][l] >= 3 ) {
-                                                                            crys_xtouch[this.crysCounter[id][k][l] - 3]++;                                                                    
-                                                                        }
-                                                                    }
+																	if (this.ZM[id][k][l] != 1 && this.ZM[id][k][l] != 2) {
+																		if (this.tibCounter[id][k][l] > 0 && this.crysCounter[id][k][l] > 0 && (this.tibCounter[id][k][l] + this.crysCounter[id][k][l] >= 3)) {
+																			mixed_xtouch[this.tibCounter[id][k][l] + this.crysCounter[id][k][l] - 3]++;
+																		}
+																		else if (this.tibCounter[id][k][l] >= 3) {
+																			tib_xtouch[this.tibCounter[id][k][l] - 3]++;
+																		}
+																		else if (this.crysCounter[id][k][l] >= 3) {
+																			crys_xtouch[this.crysCounter[id][k][l] - 3]++;
+																		}
+																	}
 																}
 															}
 															//console.log( c,t );
@@ -962,25 +962,25 @@
 															this.ZE[i][10] = t;
 															this.ZE[i][11] = ncity.GetBuildingsConditionInPercent();
 															this.ZE[i][12] = ncity.GetDefenseConditionInPercent();
-                                                            
-                                                            if (tib_xtouch[2] > 0 || tib_xtouch[3] > 0) {
-                                                                this.ZE[i][20] = "!! " + tib_xtouch[3] + "+" +tib_xtouch[2] + "+" +tib_xtouch[1] + "+" +tib_xtouch[0] + " !!";
-                                                            }
-                                                            else {
-                                                                this.ZE[i][20] = (tib_xtouch[3] + "+" +tib_xtouch[2] + "+" +tib_xtouch[1] + "+" +tib_xtouch[0]).slice(-9);
-                                                            }
-                                                            if (crys_xtouch[2] > 0 || crys_xtouch[3] > 0) {
-                                                                this.ZE[i][21] = "!! " + crys_xtouch[3] + "+" +crys_xtouch[2] + "+" +crys_xtouch[1] + "+" +crys_xtouch[0]+ " !!";
-                                                            }
-                                                            else {
-                                                                this.ZE[i][21] = (crys_xtouch[3] + "+" +crys_xtouch[2] + "+" +crys_xtouch[1] + "+" +crys_xtouch[0]).slice(-9);
-                                                            }
-                                                            if (mixed_xtouch[2] > 0 || mixed_xtouch[3] > 0) {
-                                                                this.ZE[i][22] = "!! " + mixed_xtouch[3] + "+" +mixed_xtouch[2] + "+" +mixed_xtouch[1] + "+" +mixed_xtouch[0]+ " !!";
-                                                            }
-                                                            else {
-                                                                this.ZE[i][22] = (mixed_xtouch[3] + "+" +mixed_xtouch[2] + "+" +mixed_xtouch[1] + "+" +mixed_xtouch[0]).slice(-9);
-                                                            }
+
+															if (tib_xtouch[2] > 0 || tib_xtouch[3] > 0) {
+																this.ZE[i][20] = "!! " + tib_xtouch[3] + "+" + tib_xtouch[2] + "+" + tib_xtouch[1] + "+" + tib_xtouch[0] + " !!";
+															}
+															else {
+																this.ZE[i][20] = (tib_xtouch[3] + "+" + tib_xtouch[2] + "+" + tib_xtouch[1] + "+" + tib_xtouch[0]).slice(-9);
+															}
+															if (crys_xtouch[2] > 0 || crys_xtouch[3] > 0) {
+																this.ZE[i][21] = "!! " + crys_xtouch[3] + "+" + crys_xtouch[2] + "+" + crys_xtouch[1] + "+" + crys_xtouch[0] + " !!";
+															}
+															else {
+																this.ZE[i][21] = (crys_xtouch[3] + "+" + crys_xtouch[2] + "+" + crys_xtouch[1] + "+" + crys_xtouch[0]).slice(-9);
+															}
+															if (mixed_xtouch[2] > 0 || mixed_xtouch[3] > 0) {
+																this.ZE[i][22] = "!! " + mixed_xtouch[3] + "+" + mixed_xtouch[2] + "+" + mixed_xtouch[1] + "+" + mixed_xtouch[0] + " !!";
+															}
+															else {
+																this.ZE[i][22] = (mixed_xtouch[3] + "+" + mixed_xtouch[2] + "+" + mixed_xtouch[1] + "+" + mixed_xtouch[0]).slice(-9);
+															}
 
 															try {
 																var u = offensivUnits;
@@ -1042,8 +1042,8 @@
 													}
 												}
 											}
-                                        } 
-                                        else {
+										}
+										else {
 											// console.info(this.ZE[i][2], " on ", posX, posY, " removed (IsGhostMode)");
 											this.ZE.splice(i, 1); //entfernt element aus array
 											break;
@@ -1062,17 +1062,17 @@
 								this.lastid = i;
 								this.countlastidchecked = 0;
 								this.ZA = 0;
-                            } 
-                            else {
+							}
+							else {
 								if (this.countlastidchecked > 16) {
 									// console.info(this.ZE[i][2], " on ", posX, posY, " removed (found no data)");
 									this.ZE.splice(i, 1); //entfernt element aus array
 									this.countlastidchecked = 0;
-                                } 
-                                else if (this.countlastidchecked > 10) {
+								}
+								else if (this.countlastidchecked > 10) {
 									sleeptime = 500;
-                                } 
-                                else if (this.countlastidchecked > 4) {
+								}
+								else if (this.countlastidchecked > 4) {
 									sleeptime = 250;
 								}
 								this.countlastidchecked++;
@@ -1089,19 +1089,19 @@
 							console.debug("MaelstromTools_Basescanner getResources", e);
 						}
 					},
-					FK : function (dataa, datab, id) {
+					FK: function (dataa, datab, id) {
 						this.ZZ.push(dataa);
 						this.ZS[id] = datab;
 					},
-					FL : function (id, t) {
+					FL: function (id, t) {
 						if (t == 0) {
 							for (var i = 0; i < this.ZZ.length; i++) {
 								if (this.ZZ[i][0] == id) {
 									return this.ZZ[i];
 								}
 							}
-                        } 
-                        else {
+						}
+						else {
 							if (this.ZS[id]) {
 								return this.ZS[id];
 							}
@@ -1113,9 +1113,9 @@
 			});
 
 			qx.Class.define("Addons.BaseScannerLayout", {
-				type : "singleton",
-				extend : qx.ui.window.Window,
-				construct : function () {
+				type: "singleton",
+				extend: qx.ui.window.Window,
+				construct: function () {
 					try {
 						this.base(arguments);
 						console.info("Addons.BaseScannerLayout " + window.__msbs_version);
@@ -1138,25 +1138,25 @@
 						this.removeAll();
 						this.ZZ = new qx.ui.container.Scroll();
 						this.ZY = new qx.ui.container.Composite(new qx.ui.layout.Flow());
-						this.add(this.ZZ, { flex : 3 });
+						this.add(this.ZZ, { flex: 3 });
 						this.ZZ.add(this.ZY);
 						//this.FO();
 					} catch (e) {
 						console.debug("Addons.BaseScannerLayout.construct: ", e);
 					}
 				},
-				members : {
-					ZW : null,
-					ZZ : null,
-					ZY : null,
-					ZX : null,
-					openWindow : function (title) {
+				members: {
+					ZW: null,
+					ZZ: null,
+					ZY: null,
+					ZX: null,
+					openWindow: function (title) {
 						try {
 							this.setCaption(title);
 							if (this.isVisible()) {
 								this.close();
-                            } 
-                            else {
+							}
+							else {
 								this.open();
 								this.moveTo(100, 100);
 								this.FO();
@@ -1165,7 +1165,7 @@
 							console.log("Addons.BaseScannerLayout.openWindow: ", e);
 						}
 					},
-					FO : function () {
+					FO: function () {
 						var ZM = window.Addons.BaseScannerGUI.getInstance().ZM;
 						var ZE = window.Addons.BaseScannerGUI.getInstance().ZE;
 						this.ZX = [];
@@ -1198,8 +1198,8 @@
 								if (selectedtype != rowDataLine[10]) {
 									continue;
 								}
-                            }
-                            // else {
+							}
+							// else {
 							//	continue;
 							//}
 
@@ -1218,17 +1218,17 @@
 									var res = ZM[id][x][y];
 									//console.log("Res ",res);
 									switch (res == undefined ? 0 : res) {
-									case 2:
-										//console.log("Tiberium " , MT_Base.images[MaelstromTools.Statics.Tiberium] );
-										img = '<img width="14" height="14" src="' + MT_Base.images[MaelstromTools.Statics.Tiberium] + '">';
-										break;
-									case 1:
-										//console.log("Crystal ");
-										img = '<img width="14" height="14" src="' + MT_Base.images[MaelstromTools.Statics.Crystal] + '">';
-										break;
-									default:
-										img = '<img width="14" height="14" src="' + MT_Base.images["Emptypixels"] + '">';
-										break;
+										case 2:
+											//console.log("Tiberium " , MT_Base.images[MaelstromTools.Statics.Tiberium] );
+											img = '<img width="14" height="14" src="' + MT_Base.images[MaelstromTools.Statics.Tiberium] + '">';
+											break;
+										case 1:
+											//console.log("Crystal ");
+											img = '<img width="14" height="14" src="' + MT_Base.images[MaelstromTools.Statics.Crystal] + '">';
+											break;
+										default:
+											img = '<img width="14" height="14" src="' + MT_Base.images["Emptypixels"] + '">';
+											break;
 									}
 									st = st + "<td>" + img + "</td>";
 								}
@@ -1237,10 +1237,10 @@
 							st = st + "</table>";
 							//console.log("setWidgetLabels ", st);
 							var l = new qx.ui.basic.Label().set({
-									backgroundColor : "#303030",
-									value : st,
-									rich : true
-								});
+								backgroundColor: "#303030",
+								value: st,
+								rich: true
+							});
 							l.cid = id;
 							this.ZX.push(id);
 							l.addListener("click", function (e) {
@@ -1263,8 +1263,8 @@
 						//console.log("this.ZW.length",this.ZW.length);
 						for (a = 0; a < this.ZW.length; a++) {
 							this.ZY.add(this.ZW[a], {
-								row : b,
-								column : c
+								row: b,
+								column: c
 							});
 							c++;
 							if (c > 4) {
@@ -1277,42 +1277,42 @@
 			});
 
 			qx.Class.define("Addons.LocalStorage", {
-				type : "static",
-				extend : qx.core.Object,
-				statics : {
-					isSupported : function () {
-						return typeof(localStorage) !== "undefined";
+				type: "static",
+				extend: qx.core.Object,
+				statics: {
+					isSupported: function () {
+						return typeof (localStorage) !== "undefined";
 					},
-					isdefined : function (key) {
+					isdefined: function (key) {
 						return (localStorage[key] !== "undefined" && localStorage[key] != null);
 					},
-					isdefineddata : function (data, key) {
+					isdefineddata: function (data, key) {
 						return (data[key] !== "undefined" && data[key] != null);
 					},
-					setglobal : function (key, value) {
+					setglobal: function (key, value) {
 						try {
 							if (Addons.LocalStorage.isSupported()) {
 								localStorage[key] = JSON.stringify(value);
 							}
-                        } 
-                        catch (e) {
+						}
+						catch (e) {
 							console.debug("Addons.LocalStorage.setglobal: ", e);
 						}
 					},
-					getglobal : function (key, defaultValue) {
+					getglobal: function (key, defaultValue) {
 						try {
 							if (Addons.LocalStorage.isSupported()) {
 								if (Addons.LocalStorage.isdefined(key)) {
 									return JSON.parse(localStorage[key]);
 								}
 							}
-                        } 
-                        catch (e) {
+						}
+						catch (e) {
 							console.log("Addons.LocalStorage.getglobal: ", e);
 						}
 						return defaultValue;
 					},
-					setserver : function (key, value) {
+					setserver: function (key, value) {
 						try {
 							if (Addons.LocalStorage.isSupported()) {
 								var sn = ClientLib.Data.MainData.GetInstance().get_Server().get_Name();
@@ -1324,24 +1324,24 @@
 											data = {};
 											console.debug("LocalStorage data from server not null, but not object");
 										}
-                                    } 
-                                    catch (e) {
+									}
+									catch (e) {
 										console.debug("LocalStorage data from server not null, but parsererror", e);
 										data = {};
 									}
-                                } 
-                                else {
+								}
+								else {
 									data = {};
 								}
 								data[key] = value;
 								localStorage[sn] = JSON.stringify(data);
 							}
-                        } 
-                        catch (e) {
+						}
+						catch (e) {
 							console.debug("Addons.LocalStorage.setserver: ", e);
 						}
 					},
-					getserver : function (key, defaultValue) {
+					getserver: function (key, defaultValue) {
 						try {
 							if (Addons.LocalStorage.isSupported()) {
 								var sn = ClientLib.Data.MainData.GetInstance().get_Server().get_Name();
@@ -1352,43 +1352,43 @@
 									}
 								}
 							}
-                        } 
-                        catch (e) {
+						}
+						catch (e) {
 							console.log("Addons.LocalStorage.getserver: ", e);
 						}
 						return defaultValue;
 					}
 				}
 			});
-			
-			if(typeof Addons.Language === 'undefined'){
+
+			if (typeof Addons.Language === 'undefined') {
 				qx.Class.define("Addons.Language", {
-					type : "singleton",
-					extend : qx.core.Object,
-					members : {
-						d : {},
-						debug : false,
-						addtranslateobj : function (o) {
-							if ( o.hasOwnProperty("main") ){
-								this.d[o.main.toString()] = o;								
-								if(this.debug){
-									console.log("Translate Added ", o.main.toString() );
+					type: "singleton",
+					extend: qx.core.Object,
+					members: {
+						d: {},
+						debug: false,
+						addtranslateobj: function (o) {
+							if (o.hasOwnProperty("main")) {
+								this.d[o.main.toString()] = o;
+								if (this.debug) {
+									console.log("Translate Added ", o.main.toString());
 								}
-								delete o.main;								
-                            } 
-                            else {
+								delete o.main;
+							}
+							else {
 								console.debug("Addons.Language.addtranslateobj main not define");
 							}
 						},
-						get : function (t) {
+						get: function (t) {
 							var locale = qx.locale.Manager.getInstance().getLocale();
 							var loc = locale.split("_")[0];
-							if ( this.d.hasOwnProperty(t) ){
-								if ( this.d[t].hasOwnProperty(loc) ){
+							if (this.d.hasOwnProperty(t)) {
+								if (this.d[t].hasOwnProperty(loc)) {
 									return this.d[t][loc];
 								}
 							}
-							if(this.debug){
+							if (this.debug) {
 								console.debug("Addons.Language.get ", t, " not translate for locale ", loc);
 							}
 							return t;
@@ -1396,26 +1396,26 @@
 					}
 				});
 			}
-			
+
 			qx.Class.define("qx.ui.table.cellrenderer.Replace", {
-				extend : qx.ui.table.cellrenderer.Default,
+				extend: qx.ui.table.cellrenderer.Default,
 
-				properties : {
+				properties: {
 
-					replaceMap : {
-						check : "Object",
-						nullable : true,
-						init : null
+					replaceMap: {
+						check: "Object",
+						nullable: true,
+						init: null
 					},
-					replaceFunction : {
-						check : "Function",
-						nullable : true,
-						init : null
+					replaceFunction: {
+						check: "Function",
+						nullable: true,
+						init: null
 					}
 				},
-				members : {
+				members: {
 					// overridden
-					_getContentHtml : function (cellInfo) {
+					_getContentHtml: function (cellInfo) {
 						var value = cellInfo.value;
 						var replaceMap = this.getReplaceMap();
 						var replaceFunc = this.getReplaceFunction();
@@ -1437,7 +1437,7 @@
 						return qx.bom.String.escape(this._formatValue(cellInfo));
 					},
 
-					addReversedReplaceMap : function () {
+					addReversedReplaceMap: function () {
 						var map = this.getReplaceMap();
 						for (var key in map) {
 							var value = map[key];
@@ -1447,41 +1447,41 @@
 					}
 				}
 			});
-			
+
 			console.info("Maelstrom_Basescanner initialised");
-			
+
 			var T = Addons.Language.getInstance();
 			T.debug = false;
-			T.addtranslateobj( {main:"Point", de: "Position", pt: "Position", fr: "Position"} );
-			T.addtranslateobj( {main:"BaseScanner Overview", de: "Basescanner Übersicht", pt: "Visão geral do scanner de base", fr: "Aperçu du scanner de base"} );
-			T.addtranslateobj( {main:"Scan", de: "Scannen", pt: "Esquadrinhar", fr: "Balayer"} );
-			T.addtranslateobj( {main:"Location", de: "Lage", pt: "localização", fr: "Emplacement"} );
-			T.addtranslateobj( {main:"Player", de: "Spieler", pt: "Jogador", fr: "Joueur"} );
-			T.addtranslateobj( {main:"Bases", de: "Bases", pt: "Bases", fr: "Bases"} );
-			T.addtranslateobj( {main:"Camp,Outpost", de: "Lager,Vorposten", pt: "Camp,Posto avançado", fr: "Camp,Avant-poste"} );
-			T.addtranslateobj( {main:"Camp", de: "Lager", pt: "Camp", fr: "Camp"} );						
-			T.addtranslateobj( {main:"Outpost", de: "Vorposten", pt: "Posto avançado", fr: "Avant-poste"} );
-			T.addtranslateobj( {main:"BaseScanner Layout", de: "BaseScanner Layout", pt: "Layout da Base de Dados de Scanner", fr: "Mise scanner de base"} );
-			T.addtranslateobj( {main:"Show Layouts", de: "Layouts anzeigen", pt: "Mostrar Layouts", fr: "Voir Layouts"} );						
-			T.addtranslateobj( {main:"Building state", de: "Gebäudezustand", pt: "construção do Estado", fr: "construction de l'État"} );
-			T.addtranslateobj( {main:"Defense state", de: "Verteidigungszustand", pt: "de Defesa do Estado", fr: "défense de l'Etat"} );
-			T.addtranslateobj( {main:"CP", de: "KP", pt: "CP", fr: "CP"} );
-			T.addtranslateobj( {main:"CP Limit", de: "KP begrenzen", pt: "CP limitar", fr: "CP limiter"} );						
-			T.addtranslateobj( {main:"min Level", de: "min. Level", pt: "nível mínimo", fr: "niveau minimum"} );
-			T.addtranslateobj( {main:"clear Cache", de: "Cache leeren", pt: "limpar cache", fr: "vider le cache"} );
-			T.addtranslateobj( {main:"Only centre on World", de: "Nur auf Welt zentrieren", pt: "Único centro no Mundial", fr: "Seul centre sur World"} );
-			T.addtranslateobj( {main:"base set up at", de: "Basis errichtbar", pt: "base de configurar a", fr: "mis en place à la base"} );	
-			T.addtranslateobj( {main:"Infantry", de: "Infanterie", pt: "Infantaria", fr: "Infanterie"} );
-			T.addtranslateobj( {main:"Vehicle", de: "Fahrzeuge", pt: "Veículos", fr: "Vehicule"} );
-			T.addtranslateobj( {main:"Aircraft", de: "Flugzeuge", pt: "Aeronaves", fr: "Aviation"} );
-			T.addtranslateobj( {main:"Tiberium", de: "Tiberium", pt: "Tibério", fr: "Tiberium"} );
-			T.addtranslateobj( {main:"Crystal", de: "Kristalle", pt: "Cristal", fr: "Cristal"} );
-			T.addtranslateobj( {main:"Power", de: "Strom", pt: "Potência", fr: "Energie"} );
-			T.addtranslateobj( {main:"Dollar", de: "Credits", pt: "Créditos", fr: "Crédit"} );
-			T.addtranslateobj( {main:"Research", de: "Forschung", pt: "Investigação", fr: "Recherche"} );
-			T.addtranslateobj( {main:"All Layouts", de: "Alle Layouts", pt: "Todos os layouts", fr: "Toutes les mises en page"} );
-			T.addtranslateobj( {main:"-----", de: "--", pt: "--", fr: "--"} );
-					
+			T.addtranslateobj({ main: "Point", de: "Position", pt: "Position", fr: "Position", es: "Posición" });
+			T.addtranslateobj({ main: "BaseScanner Overview", de: "Basescanner Übersicht", pt: "Visão geral do scanner de base", fr: "Aperçu du scanner de base", es: "Vista general" });
+			T.addtranslateobj({ main: "Scan", de: "Scannen", pt: "Esquadrinhar", fr: "Balayer", es: "Escanear" });
+			T.addtranslateobj({ main: "Location", de: "Lage", pt: "localização", fr: "Emplacement", es: "Ubicación" });
+			T.addtranslateobj({ main: "Player", de: "Spieler", pt: "Jogador", fr: "Joueur", es: "Jugador" });
+			T.addtranslateobj({ main: "Bases", de: "Bases", pt: "Bases", fr: "Bases", es: "Bases" });
+			T.addtranslateobj({ main: "Camp,Outpost", de: "Lager,Vorposten", pt: "Camp,posto avançado", fr: "Camp,avant-poste", es: "Camp.,puesto avanz." });
+			T.addtranslateobj({ main: "Camp", de: "Lager", pt: "Camp", fr: "Camp", es: "Campamento" });
+			T.addtranslateobj({ main: "Outpost", de: "Vorposten", pt: "posto avançado", fr: "avant-poste", es: "Puesto avanzado" });
+			T.addtranslateobj({ main: "BaseScanner Layout", de: "BaseScanner Layout", pt: "Layout da Base de Dados de Scanner", fr: "Mise scanner de base", es: "Diseños de BaseScanner" });
+			T.addtranslateobj({ main: "Show Layouts", de: "Layouts anzeigen", pt: "Mostrar Layouts", fr: "Voir Layouts", es: "Mostrar diseños" });
+			T.addtranslateobj({ main: "Building state", de: "Gebäudezustand", pt: "construção do Estado", fr: "construction de l'État", es: "Estado de construcción" });
+			T.addtranslateobj({ main: "Defense state", de: "Verteidigungszustand", pt: "de Defesa do Estado", fr: "défense de l'Etat", es: "Estado de defensa" });
+			T.addtranslateobj({ main: "CP", de: "KP", pt: "CP", fr: "CP", es: "PM" });
+			T.addtranslateobj({ main: "CP Limit", de: "KP begrenzen", pt: "CP limitar", fr: "CP limiter", es: "Límites de PM" });
+			T.addtranslateobj({ main: "min Level", de: "min. Level", pt: "nível mínimo", fr: "niveau minimum", es: "Nivel mínimo" });
+			T.addtranslateobj({ main: "clear Cache", de: "Cache leeren", pt: "limpar cache", fr: "vider le cache", es: "Borrar caché" });
+			T.addtranslateobj({ main: "Only center on World", de: "Nur auf Welt zentrieren", pt: "Único centro no Mundial", fr: "Seul centre sur World", es: "Sólo el centro del mundo" });
+			T.addtranslateobj({ main: "base set up at", de: "Basis errichtbar", pt: "base de configurar a", fr: "mis en place à la base", es: "configuración de base en" });
+			T.addtranslateobj({ main: "Infantry", de: "Infanterie", pt: "Infantaria", fr: "Infanterie", es: "Infantería" });
+			T.addtranslateobj({ main: "Vehicle", de: "Fahrzeuge", pt: "Veículos", fr: "Vehicule", es: "Vehículo" });
+			T.addtranslateobj({ main: "Aircraft", de: "Flugzeuge", pt: "Aeronaves", fr: "Aviation", es: "Aviación" });
+			T.addtranslateobj({ main: "Tiberium", de: "Tiberium", pt: "Tibério", fr: "Tiberium", es: "Tiberio" });
+			T.addtranslateobj({ main: "Crystal", de: "Kristalle", pt: "Cristal", fr: "Cristal", es: "Cristal" });
+			T.addtranslateobj({ main: "Power", de: "Strom", pt: "Potência", fr: "Energie", es: "Energía" });
+			T.addtranslateobj({ main: "Dollar", de: "Credits", pt: "Créditos", fr: "Crédit", es: "Créditos" });
+			T.addtranslateobj({ main: "Research", de: "Forschung", pt: "Investigação", fr: "Recherche", es: "Investigación" });
+			T.addtranslateobj({ main: "All Layouts", de: "Alle Layouts", pt: "Todos os layouts", fr: "Toutes les mises en page", es: "Todos los diseños" });
+			T.addtranslateobj({ main: "-----", de: "--", pt: "--", fr: "--", es: "-----" });
+
 			var MT_Lang = null;
 			var MT_Cache = null;
 			var MT_Base = null;
@@ -1501,16 +1501,16 @@
 			}, this);
 			Addons.BaseScannerGUI.getInstance().addListener("close", Addons.BaseScannerGUI.getInstance().FN, Addons.BaseScannerGUI.getInstance());
 			//this.addListener("resize", function(){ }, this );
-			
+
 			MT_Base.addToMainMenu("BaseScanner", openBaseScannerOverview);
-			
-			if(typeof Addons.AddonMainMenu !== 'undefined'){
+
+			if (typeof Addons.AddonMainMenu !== 'undefined') {
 				var addonmenu = Addons.AddonMainMenu.getInstance();
 				addonmenu.AddMainMenu("Basescanner", function () {
 					Addons.BaseScannerGUI.getInstance().openWindow(T.get("BaseScanner Overview") + " version " + window.__msbs_version);
-				},"ALT+B");
+				}, "ALT+B");
 			}
-			
+
 		}
 
 		function getResourcesPart(cityEntities) {
@@ -1541,7 +1541,7 @@
 		function objfnkstrON(obj) {
 			var key;
 			for (key in obj) {
-				if (typeof(obj[key]) == "function") {
+				if (typeof (obj[key]) == "function") {
 					var s = obj[key].toString();
 					console.debug(key, s);
 					//var protostring = s.replace(/\s/gim, "");
