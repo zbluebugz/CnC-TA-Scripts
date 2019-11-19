@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name        Maelstrom AddOn BaseScanner
-// @description Maelstrom AddOn BaseScanner
-// @downloadURL https://github.com/zbluebugz/CnC-TA-Scripts/raw/master/MaelstromTools_AddOn_BaseScanner.user.js
-// @updateURL   https://github.com/zbluebugz/CnC-TA-Scripts/raw/master/MaelstromTools_AddOn_BaseScanner.user.js
+// @name        Maelstrom ADDON Basescanner
+// @description Maelstrom ADDON Basescanner
+// @downloadURL https://raw.githubusercontent.com/leo7044/CnC_TA/master/Maelstrom_ADDON_Basescanner_Plus_Infected_Camps.user.js
+// @updateURL   https://raw.githubusercontent.com/leo7044/CnC_TA/master/Maelstrom_ADDON_Basescanner_Plus_Infected_Camps.user.js
 // @include     http*://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @include     http*://cncapp*.alliances.commandandconquer.com/*/index.aspx*
 // @version     1.9.1
@@ -11,11 +11,9 @@
 // @grant       none
 // @copyright   2012+, Claus Neumann
 // @license     CC BY-NC-ND 3.0 - http://creativecommons.org/licenses/by-nc-nd/3.0/
-//
 // * Includes infected camps.
-// * Include all layouts view option.
-// Modified by zbluebugz in November 2019.
-//
+// * Include All layouts view option.
+// Modified by zbluebugz on November 2019.
 // ==/UserScript==
 (function () {
 	var MaelstromTools_Basescanner = function () {
@@ -644,7 +642,7 @@
 								window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FG()", 1000);
 								return;
                             } 
-                            lse {
+                            else {
 								this.ZH = false;
 								window.setTimeout("window.Addons.BaseScannerGUI.getInstance().FJ()", 1000);
 							}
@@ -713,6 +711,7 @@
 											// 	//objfnkstrON(object);
 											// 	//t1 = !t1;
 											// }
+
 											// if (object.Type == 2 && t2) {
 											// 	//console.log("object typ 2");
 											// 	//objfnkstrON(object);
