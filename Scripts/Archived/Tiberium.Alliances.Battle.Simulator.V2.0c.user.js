@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        CnC TA: Tiberium Alliances Battle Simulator V2.0c
 // @description Completely new simulator and stats calculation. It's 100 percent API no need to install any other Script. First simulator which calculates NOD upgrades correctly.
-// @downloadURL https://github.com/zbluebugz/CnC-TA-Scripts/raw/master/Tiberium.Alliances.Battle.Simulator.V2.user.js
-// @updateURL   https://github.com/zbluebugz/CnC-TA-Scripts/raw/master/Tiberium.Alliances.Battle.Simulator.V2.user.js
+// -- downloadURL https://github.com/zbluebugz/CnC-TA-Scripts/raw/master/Tiberium.Alliances.Battle.Simulator.V2.user.js
+// -- updateURL   https://github.com/zbluebugz/CnC-TA-Scripts/raw/master/Tiberium.Alliances.Battle.Simulator.V2.user.js
 // @include     http*://*alliances*.com/*
 // @include     https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @version     1.19.5
