@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name        CnC TA: Crucial Pack All in One by DebitoSphere
 // @description Contains every crucial script that is fully functional and updated constantly.
-// @version     1.0.64
+// @version     1.0.65
 // @author      DebitoSphere
 // @homepage    https://www.allyourbasesbelong2us.com
 // @namespace   AllYourBasesbelong2UsCrucialPackAllinOne
+// @include     https://www.ea.com/games/command-and-conquer/*
 // @include     http*://*alliances*.com/*
 // @include     https://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @downloadURL https://github.com/zbluebugz/CnC-TA-Scripts/raw/master/CNC.TA.Crucial.Pack.All.in.One.by.Debitosphere.user.js
@@ -24,10 +25,11 @@
 // - updated components: infernal wrapper; the movement; fixes sourced from netquik
 // - updated BaseScanner - includes infected camps and all layouts view.
 // v1.0.63 : November 2019; zbluebugz; Base Scanner - added ES language. Fixed code formatting.
-// v1.0.64 : December 2019; zbluebugz; V2 simulator - bug fix due to EA's December 2019 game patch/updates release 19.5; changed V2 sim's cncopt.com (flash) link to cnctaopt.com (non-flash)
+// v1.0.64 : December 2019; zbluebugz; V2 simulator - bug fix due to EA's December 2019 game patch/updates release 19.5; changed V2 sim's cncopt.com link to cnctaopt.com
+// v1.0.65 : July 2020; zbluebugz; Enabled settings dialog box to appear on new EA's home page; Settings dialogbox now has scroll bar for dialog box;
 //
 // ==/UserScript==
-var CrucialScriptVersion = "1.0.64";
+var CrucialScriptVersion = "1.0.65";
 
 var GM_SuperValue = new function () {
 
@@ -623,7 +625,10 @@ function init2() {
   var url = window.location.href;
   if (url == "https://alliances.commandandconquer.com/" || url == "https://alliances.commandandconquer.com/") {
 
-  } else if (url.search("/home") != -1) {
+//} else if (url.search("/home") != -1) {
+      // /home - was old home url
+   } else if (url.search("/games/command-and-conquer/command-and-conquer-tiberium-alliances") != -1) {
+       // /games/... is new home url...
     var width = $(window).width() / 2.5;
     width = width - 270;
     var height = $(window).height() / 3;
@@ -663,7 +668,10 @@ function ScriptInfo() {
   var url = window.location.href;
   if (url == "https://alliances.commandandconquer.com/" || url == "https://alliances.commandandconquer.com/") {
 
-  } else if (url.search("/home") != -1) {
+//} else if (url.search("/home") != -1) {
+      // /home - was old home url
+   } else if (url.search("/games/command-and-conquer/command-and-conquer-tiberium-alliances") != -1) {
+       // /games/... is new home url...
     var width = $(window).width() / 2.5;
     width = width + 359;
     var height = $(window).height() / 3;
@@ -791,14 +799,18 @@ function settingsWindow() {
   var url = window.location.href;
   if (url == "https://alliances.commandandconquer.com/" || url == "https://alliances.commandandconquer.com/") {
 
-  } else if (url.search("/home") != -1) {
+//} else if (url.search("/home") != -1) {
+      // /home - was old home url
+   } else if (url.search("/games/command-and-conquer/command-and-conquer-tiberium-alliances") != -1) {
+       // /games/... is new home url...
+
     var width = $(window).width() / 2.5;
     width = width - 150;
     var height = $(window).height() / 3;
     var selectionList2 = '<select name="CrucialsettingsWindowBox" size="1" style="width: 100px">';
     var infoimage = "data:image/gif;base64,R0lGODlhEgAOAKIAAFWQCPb/APn/CNDjCKfICAAAAAAAAAAAACH5BAAAAAAALAAAAAASAA4AAAMkCLrcziGG9+SkODch9IoEEXkjUGbliaUXGgyDmnEeQ9fKjWcJADs=";
     width = width - 50;
-    var selectionBox2 = '<div id="CrucialsettingsWindowBox" style="width: 520px; height: 870px; border: 4px solid grey; padding: 15px; z-index: 9999; position: absolute; background-color: #17341A; top: 100px; left: 100px; line-height: 20px;  left: ' + width + 'px; position:absolute;"><font color="#00FF00"><b>Crucial Pack All in One Settings</b><br><br>Untick the script you do not want to run in this script pack<br></div>';
+    var selectionBox2 = '<div id="CrucialsettingsWindowBox" style="width: 520px; height: 870px; overflow: auto; border: 4px solid grey; padding: 15px; z-index: 9999; position: absolute; background-color: #17341A; top: 100px; left: 100px; line-height: 20px;  left: ' + width + 'px; position:absolute;"><font color="#00FF00"><b>Crucial Pack All in One Settings</b><br><br>Untick the script you do not want to run in this script pack<br></div>';
     $('body').append(selectionBox2);
     $('#CrucialsettingsWindowBox').append('<br>');
     $('#CrucialsettingsWindowBox').append('<font color="#00FF00"><input type="checkbox" id="Script01" value="ON"><button type="button" id="info01"><img src="' + infoimage + '" alt="Information about this Script" width="14" height="14"> </button> ' + ScriptName01 + '<br>');
@@ -3434,7 +3446,7 @@ if (Disable_MaelstromTools == true) {
                           try {
                             if (!this.Table) {
                               this.Widget.setLayout(new qx.ui.layout.HBox());
-              
+
                               this.Model = new qx.ui.table.model.Simple();
                               this.Model.setColumns(["City", "Tib. Storage", "Tiberium", "Full", "Crystal", "Full", "Power", "Storage", "Full"]);
                               this.Table = new qx.ui.table.Table(this.Model);
@@ -3442,25 +3454,25 @@ if (Disable_MaelstromTools == true) {
                                 flex: 1
                               });
                             }
-              
+
                             var Totals = Object();
                             Totals[MaelstromTools.Statics.Tiberium] = 0;
                             Totals[MaelstromTools.Statics.Crystal] = 0;
                             Totals[MaelstromTools.Statics.Power] = 0;
                             Totals[MaelstromTools.Statics.Tiberium + "Max"] = 0;
                             Totals[MaelstromTools.Statics.Power + "Max"] = 0;
-              
+
                             var rowData = [];
-              
+
                             for (var cityName in this.Cache) {
                               var cityCache = this.Cache[cityName];
-              
+
                               Totals[MaelstromTools.Statics.Tiberium] += cityCache[MaelstromTools.Statics.Tiberium];
                               Totals[MaelstromTools.Statics.Crystal] += cityCache[MaelstromTools.Statics.Crystal];
                               Totals[MaelstromTools.Statics.Power] += cityCache[MaelstromTools.Statics.Power];
                               Totals[MaelstromTools.Statics.Tiberium + "Max"] += cityCache[MaelstromTools.Statics.Tiberium + 'Max'];
                               Totals[MaelstromTools.Statics.Power + "Max"] += cityCache[MaelstromTools.Statics.Power + 'Max'];
-              
+
                               rowData.push([
                                 cityName,
                                 MaelstromTools.Wrapper.FormatNumbersCompact(cityCache[MaelstromTools.Statics.Tiberium + 'Max']),
@@ -3484,13 +3496,13 @@ if (Disable_MaelstromTools == true) {
                               MaelstromTools.Wrapper.FormatNumbersCompact(Totals[MaelstromTools.Statics.Power + 'Max']),
                               ''
                               ]);
-              
+
                             this.Model.setData(rowData);
                           } catch (e) {
                             console.log("MaelstromTools.ResourceOverview.setWidgetLabels: ", e);
                           }
                         },
-              
+
                         */
               setWidgetLabels: function () {
                 try {
@@ -3628,17 +3640,17 @@ if (Disable_MaelstromTools == true) {
                         /*
                         var cityX = ncity.get_PosX();
                         var cityY = ncity.get_PosY();
-    
+
                         var mainData = ClientLib.Data.MainData.GetInstance();
                         var visRegion = ClientLib.Vis.VisMain.GetInstance().get_Region();
-    
+
                         var gridW = visRegion.get_GridWidth();
                         var gridH = visRegion.get_GridHeight();
                         //console.log(cname);
                         //console.log("x: " + cityX + " y: " + cityY);
-    
+
                         var worldObj = visRegion.GetObjectFromPosition((this.Cache[cname]["SupportedCityX"]*gridW), (this.Cache[cname]["SupportedCityY"]*gridH));
-    
+
                         //ClientLib.Vis.Region.RegionCity
                         if (worldObj == null) {
                           this.Cache[cname]["SupportTime"] = "";
@@ -3646,7 +3658,7 @@ if (Disable_MaelstromTools == true) {
                           console.log(cname);
                           //console.log(worldObj.CalibrationSupportDuration());
                           var weaponState = worldObj.get_SupportWeaponStatus();
-    
+
                           //console.log(this.calcDuration(ncity, worldObj));
                           var cities = ClientLib.Data.MainData.GetInstance().get_Cities();
                           cities.set_CurrentOwnCityId(ncity.get_Id());
@@ -3685,7 +3697,7 @@ if (Disable_MaelstromTools == true) {
               /*
               calcDuration: function(currOwnCity, regionCity) {
                 var targetCity = MaelstromTools.Wrapper.GetCity(regionCity.get_Id());
-    
+
                 var supportBase=regionCity.get_SupportData();
                 if(supportBase == null)
                 {
@@ -4140,7 +4152,7 @@ if (Disable_MaelstromTools == true) {
                   if(!building) {
                     continue;
                   }
-    
+
                   //console.log(building.get_TechName() + " - " + ncity.get_CityFaction() + " - " + ClientLib.Base.Tech.GetTechIdFromTechNameAndFaction(building.get_TechName(), ncity.get_CityFaction()) + " at lvl " + building.get_CurrentLevel());
                   buildings.push(building);
                 //buildings[count++] = building;
@@ -4263,7 +4275,7 @@ if (Disable_MaelstromTools == true) {
                 return (Math.floor(ncity.get_LvlBase() * 100) / 100).toFixed(2);
               }
               /*,
-    
+
               GetPointsByLevelWithThresholds: function (_levelThresholds,_levelFactors,_iLevel) {
                 var result=0;
                 var lastLevel=_iLevel;
@@ -4287,14 +4299,14 @@ if (Disable_MaelstromTools == true) {
                 var armyPoints = MaelstromTools.Wrapper.GetPointsByLevelWithThresholds(m_iArmyPointsPerLevelThresholds, m_fArmyPointsPerLevel, _iLevel);
                 return Math.min(armyPoints, server.get_MaxArmyPoints());
               },
-    
+
               GetBuilding: function(ncity, techName) {
                 return ncity.get_CityBuildingsData().GetUniqueBuildingByTechName(techName)
               },
-    
+
               GetCommandCenter: function(ncity) {
                 //var techName = ClientLib.Base.Tech.GetTechIdFromTechNameAndFaction(ClientLib.Base.ETechName.Command_Center, ClientLib.Data.MainData.GetInstance().get_Player().get_Faction());
-    
+
                 return MaelstromTools.Wrapper.GetBuilding(ncity, ClientLib.Base.ETechName.Command_Center);
               // conyard return this.GetBuildingCondition$0(ClientLib.Base.Tech.GetTechIdFromTechNameAndFaction$0(0, ClientLib.Data.MainData.GetInstance$9().get_Player$2().get_Faction$2()));
               // ClientLib.Data.City.prototype.GetOffenseConditionInPercent=ClientLib.Data.City.prototype.GetOffenseConditionInPercent$0;
@@ -4485,11 +4497,11 @@ if (Disable_MaelstromTools == true) {
                 - Persistent filter by city, top and affordable per resource type
                 - Reload onTabChange for speed optimization
                 - Estimated time until upgrade is affordable
-    
+
                 ToDo:
                 - let the user decide to sort by colums he like i.e. timefactor or cost/gain and save it in the configuration
                 - integrate buttons to transfer resources ?
-    
+
                  */
                 try {
                   this.HT_SelectedResourceType = -1;
@@ -15663,7 +15675,7 @@ if (Disable_Green_Cross_Tools == true) {
               try {
                 //Collect All Resources from other bases button
                 /*var playArea = qx.core.Init.getApplication().getUIItem(ClientLib.Data.Missions.PATH.OVL_PLAYAREA);
-      
+
                 var transAllResBtn = new qx.ui.form.Button("Transfer All");
                 transAllResBtn.set
                 ({
@@ -15777,7 +15789,7 @@ if (Disable_Green_Cross_Tools == true) {
                   playerCities = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities();
                   ownCity = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentOwnCity();
                   ownCityID = ownCity.get_Id();
-      
+
                   //playerCities.d contains the city ID's
                   for (var cityID in playerCities.d)
                   {
@@ -20927,7 +20939,7 @@ if (Disable_FluniksTools == true) {
 
                 /*AutoUpdateButton.addListener("click", function (e) {
                   if (window.FlunikTools.Main.getInstance().autoUpdateHandle != null) {
-    
+
                     AutoUpdateButton.setLabel("F.OFF");
                     //window.FlunikTools.Main.getInstance().stopAutoUpdate();
                     BuildingsButton.setLabel("F.OFF");
@@ -20940,13 +20952,13 @@ if (Disable_FluniksTools == true) {
                   } else {
                     //window.FlunikTools.Main.getInstance().startAutoUpdate("Construction Yard, Command Center, Defense HQ, Defense Facility, Barracks, Factory, Airfield, Accumulator, Silo, Refinery, Power Plant, Harvester, Blade of Kane, Eye of Kane, Fist of Kane, Falcon Support, Ion Cannon Support, Skystrike Support, War Factory, Hand of Nod, Airport");
                     AutoUpdateButton.setLabel("F.ON");
-    
+
                     window.FlunikTools.Main.getInstance().BuildingstartAutoUpdate();
                     BuildingsButton.setLabel("F.ON");
-    
+
                     window.FlunikTools.Main.getInstance().DefensestartAutoUpdate();
                     DefenseButton.setLabel("F.ON");
-    
+
                     window.FlunikTools.Main.getInstance().OffensestartAutoUpdate();
                     OffenseButton.setLabel("F.ON");
                   }
@@ -21012,15 +21024,15 @@ if (Disable_FluniksTools == true) {
                 var gameDataTech = unit.get_UnitGameData_Obj();
                 var hasEnoughResources = city.HasEnoughResources(ClientLib.Base.Util.GetTechLevelResourceRequirements_Obj(nextLevel, gameDataTech));
                 var CanUpgrade;
-    
+
                 if(placementType == ClientLib.Base.EPlacementType.Defense){
                 CanUpgrade = city.GetUnitRecruitedInfoByCoord(ClientLib.Base.EPlacementType.Defense ,unit.get_CoordX() ,unit.get_CoordY()).CanUpgrade;
                 }
-    
+
                 if(placementType == ClientLib.Base.EPlacementType.Offense){
                 CanUpgrade = city.GetUnitRecruitedInfoByCoord(ClientLib.Base.EPlacementType.Offense ,unit.get_CoordX() ,unit.get_CoordY()).CanUpgrade;
                 }
-    
+
                 if (gameDataTech == null || unit.get_IsDamaged() || city.get_IsLocked() || !hasEnoughResources || CanUpgrade == false) {
                       return (CanUpgrade);
                   }
@@ -21226,7 +21238,7 @@ if (Disable_FluniksTools == true) {
                 }
 
                 /*
-      
+
                 if (((airRT !< 1) && (vehRT !< 1 )&& (infRT !< 1))&&(airRT !> 0) && (vehRT !> 0 )&& (infRT !> 0)){
                 var totalNoRT = 0;
                 return (totalNoRT);
@@ -22126,7 +22138,7 @@ if (Disable_FluniksTools == true) {
                   /* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                   if( (Ref_obj != undefined) || (Pow_obj != undefined) || (Har_obj != undefined) || (Har1_obj != undefined) || (Acc_obj != undefined) || (Sil_obj != undefined)){
                               console.log(Ref_obj, refarr);console.log(Pow_obj, powarr);console.log(Har_obj, hararr); console.log(Har1_obj, hararr1);console.log(Acc_obj, accarr);console.log(Sil_obj, silarr);
-         
+
                                     ClientLib.Net.CommunicationManager.GetInstance().SendCommand("UpgradeBuilding", Sil_obj, null, null, true);
                                      ClientLib.Net.CommunicationManager.GetInstance().SendCommand("UpgradeBuilding", Acc_obj, null, null, true);
                                     ClientLib.Net.CommunicationManager.GetInstance().SendCommand("UpgradeBuilding", Har1_obj, null, null, true);
@@ -22343,7 +22355,7 @@ if (Disable_TACS3_Sim == true) {
       function compare(a, b) {
       return a - b;
       }
-    
+
       function sort_and_unique(my_array) {
       my_array.sort(compare);
       for (var i = 1; i < my_array.length; i++) {
@@ -23509,7 +23521,7 @@ if (Disable_TACS3_Sim == true) {
                 column: 0,
                 colSpan: 3
                 });
-    
+
                 // showShift Checkbox
                 this.options.showShift = new qx.ui.form.CheckBox(lang("Show shift buttons"));
                 var temp = localStorage.ta_sim_showShift;
@@ -23525,7 +23537,7 @@ if (Disable_TACS3_Sim == true) {
                 column: 0,
                 colSpan: 3
                 });
-    
+
                 // side RadioButtons
                 this.options.sideLabel = new qx.ui.basic.Label(lang("Side:"));
                 this.options.leftSide = new qx.ui.form.RadioButton(lang("Left"));
@@ -23552,7 +23564,7 @@ if (Disable_TACS3_Sim == true) {
                 row: 4,
                 column: 2
                 });
-    
+
                 // locks Checkboxes
                 this.options.locksLabel = new qx.ui.basic.Label(lang("Locks:"));
                 this.options.attackLock = new qx.ui.form.CheckBox(lang("Attack"));
@@ -24907,11 +24919,11 @@ if (Disable_TACS3_Sim == true) {
             var hr = Math.floor(secs / 3600);
             var min = Math.floor((secs - (hr * 3600)) / 60);
             var sec = Math.floor(secs - (hr * 3600) - (min * 60));
-    
+
             if (hr < 10) hr = "0" + hr;
             if (min < 10) min = "0" + min;
             if (sec < 10) sec = "0" + sec;
-    
+
             if (format !== null) {
             var formatted_time = format.replace('hh', hr);
             formatted_time = formatted_time.replace('h', hr * 1 + "");
