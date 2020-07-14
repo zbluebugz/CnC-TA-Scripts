@@ -26,7 +26,7 @@
 // - updated BaseScanner - includes infected camps and all layouts view.
 // v1.0.63 : November 2019; zbluebugz; Base Scanner - added ES language. Fixed code formatting.
 // v1.0.64 : December 2019; zbluebugz; V2 simulator - bug fix due to EA's December 2019 game patch/updates release 19.5; changed V2 sim's cncopt.com link to cnctaopt.com
-// v1.0.65 : July 2020; zbluebugz; Enabled settings dialog box to appear on new EA's home page; Settings dialogbox now has scroll bar for dialog box;
+// v1.0.65 : July 2020; zbluebugz; Enabled settings dialog box to appear on new EA's home page; Settings dialogbox now has scroll bar for dialog box; Settings' close button now works;
 //
 // ==/UserScript==
 var CrucialScriptVersion = "1.0.65";
@@ -633,7 +633,8 @@ function init2() {
     width = width - 270;
     var height = $(window).height() / 3;
     var selectionList2 = '<select name="CrucialSelectionBox" size="1" style="width: 130px">';
-    var selectionBox3 = '<div id="CrucialSelectionBox" style="width: 130px; height: 150px; border: 4px solid grey; padding: 10px; z-index: 9999; position: absolute; background-color: #17341A; top: 40px; left: 130px; line-height: 20px;  left: ' + width + 'px; position:absolute;"><font color="#00FF00"><p align="center"><b>Crucial Pack<br>All in One<br>Installed</b></font></p></div>';
+//    var selectionBox3 = '<div id="CrucialSelectionBox" style="width: 130px; height: 150px; border: 4px solid grey; padding: 10px; z-index: 9999; position: absolute; background-color: #17341A; top: 40px; left: 130px; line-height: 20px;  left: ' + width + 'px; position:absolute;"><font color="#00FF00"><p align="center"><b>Crucial Pack<br>All in One<br>Installed</b></font></p></div>';
+    var selectionBox3 = '<div id="CrucialSelectionBox" style="border: 4px solid grey; padding: 10px; z-index: 9999; position: absolute; background-color: #17341A; top: 40px; left: 130px; line-height: 20px;  left: ' + width + 'px; position:absolute;"><font color="#00FF00"><p align="center"><b>Crucial Pack<br>All in One<br>Installed</b></font></p></div>';
     $('body').append(selectionBox3);
     $('#CrucialSelectionBox').append('<p align="center"><button type="button" id="CrucialDonate">Donate</button><br><br><button type="button" id="CrucialSettings">Crucial Script Settings</button><br><br><button type="button" id="NewSessionLogin">New Login Session</button></p></div>');
 
@@ -845,7 +846,7 @@ function settingsWindow() {
     $('#CrucialsettingsWindowBox').append('<font color="#00FF00"><input type="checkbox" id="Script30" value="ON"><button type="button" id="info30"><img src="' + infoimage + '" alt="Information about this Script" width="14" height="14"> </button> ' + ScriptName30 + '<br>');
     $('#CrucialsettingsWindowBox').append('<font color="#00FF00"><input type="checkbox" id="Script31" value="ON"><button type="button" id="info31"><img src="' + infoimage + '" alt="Information about this Script" width="14" height="14"> </button> ' + ScriptName31 + '<br>');
 
-    $('#CrucialsettingsWindowBox').append('<font color="#00FF00"><br><b>Simulators</b><br><input type = "radio" id = "V2Sim" name = "simulator" value = "V2Sim"><button type="button" id="siminfo01"><img src="' + infoimage + '" alt="Information about this Script" width="14" height="14"> </button>' + SimName01 + '<br><input type = "radio" id = "TACS3Sim" name = "simulator" value = "TACS3Sim"><button type="button" id="siminfo02"><img src="' + infoimage + '" alt="Information about this Script" width="14" height="14"> </button>' + SimName02 + '<br><input type = "radio" id = "DisableAll" name = "simulator" value = "DisableAll">' + SimName03 + '<br><br><button type="button" id="save">Save Changes</button><button type="button" id="close">Close</button><button type="button" id="restore">Restore Default Settings</button><br></font></div>');
+    $('#CrucialsettingsWindowBox').append('<font color="#00FF00"><br><b>Simulators</b><br><input type = "radio" id = "V2Sim" name = "simulator" value = "V2Sim"><button type="button" id="siminfo01"><img src="' + infoimage + '" alt="Information about this Script" width="14" height="14"> </button>' + SimName01 + '<br><input type = "radio" id = "TACS3Sim" name = "simulator" value = "TACS3Sim"><button type="button" id="siminfo02"><img src="' + infoimage + '" alt="Information about this Script" width="14" height="14"> </button>' + SimName02 + '<br><input type = "radio" id = "DisableAll" name = "simulator" value = "DisableAll">' + SimName03 + '<br><br><button type="button" id="save">Save Changes</button><button type="button" id="closeSettings">Close</button><button type="button" id="restore">Restore Default Settings</button><br></font></div>');
     LoadSettings();
 
     $('#info01').click(function () {
@@ -1239,7 +1240,8 @@ function settingsWindow() {
       SetDefaultSettings();
     });
 
-    $('#close').click(function () {
+    $('#closeSettings').click(function () {
+      // button id was "close", but didn't work. changed to closeSettings (also see button's html code above)
       var element = document.getElementById("CrucialsettingsWindowBox");
       element.outerHTML = "";
       delete element;
