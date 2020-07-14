@@ -634,7 +634,7 @@ function init2() {
     var height = $(window).height() / 3;
     var selectionList2 = '<select name="CrucialSelectionBox" size="1" style="width: 130px">';
 //    var selectionBox3 = '<div id="CrucialSelectionBox" style="width: 130px; height: 150px; border: 4px solid grey; padding: 10px; z-index: 9999; position: absolute; background-color: #17341A; top: 40px; left: 130px; line-height: 20px;  left: ' + width + 'px; position:absolute;"><font color="#00FF00"><p align="center"><b>Crucial Pack<br>All in One<br>Installed</b></font></p></div>';
-    var selectionBox3 = '<div id="CrucialSelectionBox" style="border: 4px solid grey; padding: 10px; z-index: 9999; position: absolute; background-color: #17341A; top: 40px; left: 130px; line-height: 20px;  left: ' + width + 'px; position:absolute;"><font color="#00FF00"><p align="center"><b>Crucial Pack<br>All in One<br>Installed</b></font></p></div>';
+    var selectionBox3 = '<div id="CrucialSelectionBox" style="border: 4px solid grey; padding: 10px; z-index: 5; position: absolute; background-color: #17341A; top: 400px; right: 9px; line-height: 20px; position:absolute;"><font color="#00FF00"><p align="center"><b>Crucial Pack<br>All in One<br>Installed</b></font></p></div>';
     $('body').append(selectionBox3);
     $('#CrucialSelectionBox').append('<p align="center"><button type="button" id="CrucialDonate">Donate</button><br><br><button type="button" id="CrucialSettings">Crucial Script Settings</button><br><br><button type="button" id="NewSessionLogin">New Login Session</button></p></div>');
 
@@ -811,7 +811,8 @@ function settingsWindow() {
     var selectionList2 = '<select name="CrucialsettingsWindowBox" size="1" style="width: 100px">';
     var infoimage = "data:image/gif;base64,R0lGODlhEgAOAKIAAFWQCPb/APn/CNDjCKfICAAAAAAAAAAAACH5BAAAAAAALAAAAAASAA4AAAMkCLrcziGG9+SkODch9IoEEXkjUGbliaUXGgyDmnEeQ9fKjWcJADs=";
     width = width - 50;
-    var selectionBox2 = '<div id="CrucialsettingsWindowBox" style="width: 520px; height: 870px; overflow: auto; border: 4px solid grey; padding: 15px; z-index: 9999; position: absolute; background-color: #17341A; top: 100px; left: 100px; line-height: 20px;  left: ' + width + 'px; position:absolute;"><font color="#00FF00"><b>Crucial Pack All in One Settings</b><br><br>Untick the script you do not want to run in this script pack<br></div>';
+//    var selectionBox2 = '<div id="CrucialsettingsWindowBox" style="width: 520px; height: 870px; overflow: auto; border: 4px solid grey; padding: 15px; z-index: 9999; position: absolute; background-color: #17341A; top: 100px; left: 100px; line-height: 20px;  left: ' + width + 'px; position:absolute;"><font color="#00FF00"><b>Crucial Pack All in One Settings</b><br><br>Untick the script you do not want to run in this script pack<br></div>';
+    var selectionBox2 = '<div id="CrucialsettingsWindowBox" style="width: 520px; height: 870px; overflow: auto; border: 4px solid grey; padding: 15px; z-index: 5; position: absolute; background-color: #17341A; top: 125px; right: 9px; line-height: 20px;"><font color="#00FF00"><b>Crucial Pack All in One Settings</b><br><br>Untick the script you do not want to run in this script pack<br></div>';
     $('body').append(selectionBox2);
     $('#CrucialsettingsWindowBox').append('<br>');
     $('#CrucialsettingsWindowBox').append('<font color="#00FF00"><input type="checkbox" id="Script01" value="ON"><button type="button" id="info01"><img src="' + infoimage + '" alt="Information about this Script" width="14" height="14"> </button> ' + ScriptName01 + '<br>');
