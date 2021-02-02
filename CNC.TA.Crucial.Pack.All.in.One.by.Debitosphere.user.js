@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        CnC TA: Crucial Pack All in One by DebitoSphere
 // @description Contains every crucial script that is fully functional and updated constantly.
-// @version     1.0.66
+// @version     1.0.67
 // @author      DebitoSphere
 // @homepage    https://www.allyourbasesbelong2us.com
 // @namespace   AllYourBasesbelong2UsCrucialPackAllinOne
@@ -29,6 +29,7 @@
 // v1.0.64 : December 2019; zbluebugz; V2 simulator - bug fix due to EA's December 2019 game patch/updates release 19.5; changed V2 sim's cncopt.com link to cnctaopt.com
 // v1.0.65 : July 2020; zbluebugz; Enabled settings dialog box to appear on new EA's home page; Settings dialogbox now has scroll bar for dialog box; Settings' close button now works;
 // v1.0.66 : January 2021; zbluebugz; Cleaned up and updated cnctaopt's link code.
+// v1.0.67 : February 2021; zbluebugz; Updated cnctaopt.com's link from http to https
 // ==/UserScript==
 var CrucialScriptVersion = "1.0.66";
 
@@ -8776,7 +8777,7 @@ if (Disable_CNCTA_OPT == true) {
                                 link += "~WN=" + worldName;
                                 // append world's maximum level
                                 link += "~ML=" + maxLevel;
-                                link = "http://www.cnctaopt.com/index.html?" + encodeURI(link);
+                                link = "https://www.cnctaopt.com/index.html?" + encodeURI(link);
                                 //console.log("--- cnctaopt link:", link);
                                 window.open(link, "_blank");
                             } catch (e) {
@@ -8804,7 +8805,7 @@ if (Disable_CNCTA_OPT == true) {
                                 for (let i in this) {
                                     try {
                                         if (this[i] && this[i].basename == "Composite") {
-                                            // let link = new qx.ui.form.Button("CnCTAOpt", "http://cnctaopt.com/favicon.ico");
+                                            // let link = new qx.ui.form.Button("CnCTAOpt", "https://www.cnctaopt.com/favicon.ico");
                                             let link = new qx.ui.form.Button("CnCTAOpt");
                                             link.addListener("execute", function () {
                                                 var bt = qx.core.Init.getApplication();
@@ -26290,7 +26291,7 @@ if (Disable_V2_Sim == true) {
                         one: "https://www.allyourbasesbelong2us.com/sim_img/swap1_2.png",
                         two: "https://www.allyourbasesbelong2us.com/sim_img/swap2_3.png",
                         three: "https://www.allyourbasesbelong2us.com/sim_img/swap3_4.png",
-                        // CNCTAOpt: "http://www.cnctaopt.com/favicon.ico"
+                        // CNCTAOpt: "https://www.cnctaopt.com/favicon.ico"
                     }
                 });
                 qx.Class.define("TABS.SETTINGS", {							// [static]		Settings
